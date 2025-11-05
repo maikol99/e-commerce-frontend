@@ -1,3 +1,39 @@
+# E-Commerce Frontend
+
+![Frontend Banner](https://img.shields.io/badge/Frontend-Next.js-blue) ![Tailwind](https://img.shields.io/badge/Style-TailwindCSS-teal)
+
+Este repositorio contiene el **frontend de la tienda online** desarrollado con **Next.js**, **TypeScript** y **Tailwind CSS**.  
+Proporciona la interfaz de usuario para navegar productos, gestionar el carrito y realizar compras.
+
+---
+
+## 🔹 Características
+
+- Interfaz moderna y responsiva con **Tailwind CSS**
+- Páginas de productos, categorías y detalle
+- Carrito de compras funcional
+- Integración con backend para autenticación y gestión de productos
+- Optimizado para SEO y performance con Next.js
+
+---
+
+## ⚡ Tecnologías
+
+- [Next.js](https://nextjs.org/)
+- [React](https://reactjs.org/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Node.js](https://nodejs.org/) (solo para desarrollo del frontend)
+
+---
+
+## 🚀 Instalación y desarrollo
+
+Clonar el repositorio:
+
+```bash
+git clone https://github.com/maikol99/e-commerce-frontend.git
+cd e-commerce-frontend
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
