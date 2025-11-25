@@ -22,6 +22,8 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
 import Link from "next/link";
+import { useForgotPasswordMutation, useRegisterMutation } from "@/store/api";
+import { useLoginMutation} from "@/store/api";
 
 interface LoginProps {
   isLoginOpen: boolean;
@@ -55,6 +57,10 @@ const AuthPage: React.FC<LoginProps> = ({ isLoginOpen, setIsLoginOpen }) => {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [forgotPasswordLoading, setForgotPasswordLoading] = useState(false);
 
+  const [register] = useRegisterMutation()
+  const [login ] = useLoginMutation()
+  const [forgotPassword] = useForgotPasswordMutation()
+
   const {
     register: registerLogin,
     handleSubmit: handleLoginSubmit,
@@ -70,6 +76,14 @@ const AuthPage: React.FC<LoginProps> = ({ isLoginOpen, setIsLoginOpen }) => {
     handleSubmit: handleForgotPasswordSubmit,
     formState: { errors: forgotPasswordError },
   } = useForm<forgotPasswordFormData>();
+
+
+  const onSubmitSignUp = async (data:SignUpFormData ) => {
+    setSignupLoading(true)
+  }
+ 
+
+
 
   return (
     <Dialog open={isLoginOpen} onOpenChange={setIsLoginOpen}>
