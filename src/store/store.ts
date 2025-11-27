@@ -7,6 +7,7 @@ import { api } from "./api";
 import { getDefaultAutoSelectFamily } from "net";
 import { Store } from "lucide-react";
 
+
 //persist configuration for user
 const userPersistConfig = {key:'user',storage,whitelist:['user','isEmailVerified','isLoggedIn']}
 

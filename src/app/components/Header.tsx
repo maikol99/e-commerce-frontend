@@ -28,7 +28,8 @@ import {
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { toggleLoginDialog } from "@/store/slice/userSlice";
+import { toggleLoginDialog, logout } from "@/store/slice/userSlice";
+import toast from "react-hot-toast";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Sheet,
@@ -38,6 +39,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import AuthPage from "./AuthPage";
+import { useLoginMutation, useLogoutMutation } from "@/store/api";
 
 const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -46,13 +48,18 @@ const Header = () => {
   const isLoginOpen = useSelector(
     (state: RootState) => state.user.isLoginDialogOpen
   );
-  const user = {
-    profilePicture: "",
-    name: "",
-    email: "",
-  };
 
-  const userPlaceholder = "";
+  const user = useSelector((state: RootState) => state.user.user)
+  const [logoutMutation] = useLogoutMutation()
+
+  // ✅ Cambiado: placeholder con iniciales mayúsculas
+  const userPlaceholder = user?.name
+    ? user.name
+        .split(" ")
+        .map((n: string) => n[0])
+        .join("")
+        .toUpperCase()
+    : null;
 
   const handleLoginClick = () => {
     dispatch(toggleLoginDialog());
@@ -69,7 +76,16 @@ const Header = () => {
     }
   };
 
-  const handleLogout = () => {};
+  const handleLogout = async() => {
+    try{
+      await logoutMutation({}).unwrap()   
+      dispatch(logout()); 
+      toast.success('user logged out successfully')
+      setIsDropdownOpen(false)
+    }catch{
+      toast.error('failed to logout')
+    }
+  };
 
   const menuItems = [
     ...(user && user
@@ -101,11 +117,6 @@ const Header = () => {
           },
         ]),
 
-        {
-            icon: <Lock className="h-5 w-5" />,
-            label: "Login/sign Up",
-            onClick: handleLoginClick,
-          },
     {
       icon: <User className="h-5 w-5" />,
       label: "My profile",
@@ -151,7 +162,7 @@ const Header = () => {
       label: "Help",
       href: "/how-it-work",
     },
-    ...(user
+    ...(user && user 
       ? [
           {
             icon: <LogOut className="h-5 w-5" />,

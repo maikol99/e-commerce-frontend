@@ -17,13 +17,16 @@ import {
   Mail,
   User,
 } from "lucide-react";
-import { register } from "module";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
 import Link from "next/link";
-import { useForgotPasswordMutation, useRegisterMutation } from "@/store/api";
+import { useRouter } from "next/navigation";
+import { BASE_URL, useForgotPasswordMutation, useRegisterMutation } from "@/store/api";
 import { useLoginMutation} from "@/store/api";
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { authStatus, toggleLoginDialog, setUser } from "@/store/slice/userSlice";
 
 interface LoginProps {
   isLoginOpen: boolean;
@@ -60,6 +63,9 @@ const AuthPage: React.FC<LoginProps> = ({ isLoginOpen, setIsLoginOpen }) => {
   const [register] = useRegisterMutation()
   const [login ] = useLoginMutation()
   const [forgotPassword] = useForgotPasswordMutation()
+  const dispatch = useDispatch()
+  const router = useRouter();
+
 
   const {
     register: registerLogin,
@@ -80,8 +86,68 @@ const AuthPage: React.FC<LoginProps> = ({ isLoginOpen, setIsLoginOpen }) => {
 
   const onSubmitSignUp = async (data:SignUpFormData ) => {
     setSignupLoading(true)
+
+    try {
+      const {email,password,name} = data;
+      const result = await register({email,password,name}).unwrap()
+      console.log('this is register result',result)
+      if(result.success) {
+        toast.success('verification link send to email successfuly. please verify your email')
+        dispatch(toggleLoginDialog())
+        window.location.reload();
+      }
+    } catch (error) {
+      console.log(error)
+      toast.error('Email already registered')
+    }
+    finally{
+      setSignupLoading(false)
+    }
   }
- 
+
+
+
+  const onSubmitLogin = async (data:LoginFormData ) => {
+    setLoginLoading(true)
+    try {
+      const result = await login(data).unwrap()
+      console.log('this is login result',result)
+      if(result.success) {
+        toast.success('User Login Succesfully')
+        dispatch(setUser(result.data.user || result.data)) // ✅ Guarda user en Redux
+        dispatch(authStatus()) // ✅ Marca como logueado
+        dispatch(toggleLoginDialog()) // ✅ Cierra el modal
+      }
+    } catch (error) {
+      console.log(error)
+      toast.error('Email or password is incorrect')
+    }
+    finally{
+      setLoginLoading(false)
+    }
+  }
+
+
+
+  const handleGoogleLogin = async () => {
+    setGoogleLoading(true)
+    try {
+      router.push(`${BASE_URL}/auth/google`)
+      dispatch(authStatus())
+      setTimeout(() => {
+        toast.success('Google login Successfuly')
+        setIsLoginOpen(false)
+      },3000)
+    }catch (error) {
+      console.log(error)
+      toast.error('Email or password is incorrect')
+    }
+    finally{
+      setLoginLoading(false)
+    }
+  }
+
+
 
 
 
@@ -113,7 +179,7 @@ const AuthPage: React.FC<LoginProps> = ({ isLoginOpen, setIsLoginOpen }) => {
                 transition={{ duration: 0.3 }}
               >
                 <TabsContent value="login" className="space-y-4">
-                  <form className="space-y-4">
+                  <form className="space-y-4" onSubmit={handleLoginSubmit(onSubmitLogin)}>
                     <div className="relative">
                       <Input
                         {...registerLogin("email", {
@@ -180,7 +246,7 @@ const AuthPage: React.FC<LoginProps> = ({ isLoginOpen, setIsLoginOpen }) => {
                     <p className="mx-2 text-gray-500 text-sm">Or</p>
                     <div className="flex-1 h-px bg-gray-300"></div>
                   </div>
-                  <Button className="w-full flex items-center justify-center gap-2 bg-white text-gray-700 border border-gray-300 hover:bg-gray-50">
+                  <Button onClick={handleGoogleLogin} className="w-full flex items-center justify-center gap-2 bg-white text-gray-700 border border-gray-300 hover:bg-gray-50">
                     {googleLoading ? (
                       <>
                         <Loader2 className="minimate-spin mr-2" size={20} />
@@ -200,7 +266,7 @@ const AuthPage: React.FC<LoginProps> = ({ isLoginOpen, setIsLoginOpen }) => {
                   </Button>
                 </TabsContent>
                 <TabsContent value="signup" className="space-y-4">
-                  <form className="space-y-4">
+                  <form  onSubmit={handleSignUpSubmit(onSubmitSignUp)} className="space-y-4">
                     <div className="relative">
                       <Input
                         {...registerSignUp("name", {
