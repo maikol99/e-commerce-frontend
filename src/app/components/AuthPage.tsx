@@ -92,9 +92,12 @@ const AuthPage: React.FC<LoginProps> = ({ isLoginOpen, setIsLoginOpen }) => {
       const result = await register({email,password,name}).unwrap()
       console.log('this is register result',result)
       if(result.success) {
-        toast.success('verification link send to email successfuly. please verify your email')
+        toast.success('verification link send to email sucessfully. please verify your email')
         dispatch(toggleLoginDialog())
-        window.location.reload();
+        // Esperar un poco para que el toast se muestre antes de recargar
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500)
       }
     } catch (error) {
       console.log(error)
@@ -113,10 +116,17 @@ const AuthPage: React.FC<LoginProps> = ({ isLoginOpen, setIsLoginOpen }) => {
       const result = await login(data).unwrap()
       console.log('this is login result',result)
       if(result.success) {
+        // ✅ Guardar los datos del usuario en el store
+        if(result.data && result.data.user) {
+          dispatch(setUser(result.data.user))
+        }
         toast.success('User Login Succesfully')
-        dispatch(setUser(result.data.user || result.data)) // ✅ Guarda user en Redux
-        dispatch(authStatus()) // ✅ Marca como logueado
         dispatch(toggleLoginDialog()) // ✅ Cierra el modal
+        dispatch(authStatus()) // ✅ Marca como logueado
+        // Esperar un poco para que el toast se muestre antes de recargar
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500)
       }
     } catch (error) {
       console.log(error)
@@ -132,23 +142,43 @@ const AuthPage: React.FC<LoginProps> = ({ isLoginOpen, setIsLoginOpen }) => {
   const handleGoogleLogin = async () => {
     setGoogleLoading(true)
     try {
+      // Cerrar el modal antes de redirigir
+      dispatch(toggleLoginDialog())
+      // Redirigir a Google OAuth
       router.push(`${BASE_URL}/auth/google`)
-      dispatch(authStatus())
-      setTimeout(() => {
-        toast.success('Google login Successfuly')
-        setIsLoginOpen(false)
-      },3000)
+      // No hacer dispatch(authStatus()) aquí porque el usuario aún no está autenticado
+      // El AuthCheck verificará la autenticación cuando el usuario vuelva del callback
     }catch (error) {
       console.log(error)
-      toast.error('Email or password is incorrect')
+      toast.error('Error al iniciar sesión con Google')
     }
     finally{
-      setLoginLoading(false)
+      setGoogleLoading(false)
     }
   }
 
 
+  const onSubmitForgotPassword = async (data:forgotPasswordFormData ) => {
+    setForgotPasswordLoading(true)
 
+    try {
+      const result = await forgotPassword(data.email).unwrap()
+      if(result.success) {
+        // ✅ Guardar los datos del usuario en el store
+        if(result.data && result.data.user) {
+          dispatch(setUser(result.data.user))
+        }
+        toast.success('Password reset link sent to your email successfully')
+        setForgotPasswordSuccess(true)
+      }
+    } catch (error) {
+      console.log(error)
+      toast.error('Failed to send the password reset link to email. please try later')
+    }
+    finally{
+      setForgotPasswordLoading(false)
+    }
+  }
 
 
   return (
@@ -372,7 +402,7 @@ const AuthPage: React.FC<LoginProps> = ({ isLoginOpen, setIsLoginOpen }) => {
                 </TabsContent>
                 <TabsContent value="forgot" className="space-y-4">
                   {!forgotPasswordSuccess ? (
-                    <form className="space-y-4">
+                    <form className="space-y-4" onSubmit={handleForgotPasswordSubmit(onSubmitForgotPassword)}>
                       <div className="relative">
                         <Input
                           {...registerForgotPassword("email", {

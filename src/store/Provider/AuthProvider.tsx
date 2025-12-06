@@ -1,9 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {useVerifyAuthMutation} from "../api"
-import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
-import { logout, setEmailVerified, setUser } from "../slice/userSlice";
+import { logout, setEmailVerified, setUser, authStatus } from "../slice/userSlice";
 import BookLoader from "@/lib/BookLoader";
 
 export default function AuthCheck({children} : {children:React.ReactNode}) {
@@ -17,26 +16,38 @@ export default function AuthCheck({children} : {children:React.ReactNode}) {
         const checkAuth = async() => {
             try {
                 const response = await verifyAuth({}).unwrap();
-                if(response.success){
-                    dispatch(setUser(response.data));
-                    dispatch(setEmailVerified(response.data.isEmailVerified))
+                console.log('this is response', response)
+                if(response.success && response.data && response.data.user){
+                    dispatch(setUser(response.data.user));
+                    dispatch(setEmailVerified(response.data.user.isVerified))
+                    // Asegurar que isLoggedIn esté en true si el usuario está autenticado
+                    dispatch(authStatus())
                 }else{
                     dispatch(logout())
                 }
             } catch (error) {
-                dispatch(logout())
+                // Si hay un error de autenticación, hacer logout solo si el usuario estaba marcado como logueado
+                // o si hay un usuario en el store (inconsistencia)
+                if(isLoggedIn || user){
+                    dispatch(logout())
+                }
             }
             finally{
                 setIsCheckingAuth(false);
             }
         };
 
-        if(!user && isLoggedIn){
+        // Verificar autenticación si no hay usuario en el store
+        // Esto cubre los casos de:
+        // 1. Login con Google (cookie presente pero no hay usuario en Redux)
+        // 2. Recarga de página (cookie presente pero estado de Redux se perdió)
+        // 3. Primera carga de la app (verificar si hay cookie de sesión previa)
+        if(!user){
             checkAuth();
         }else{
             setIsCheckingAuth(false);
         }
-    },[verifyAuth,dispatch,user])
+    },[verifyAuth,dispatch,user, isLoggedIn])
 
     if(isLoading || isCheckingAuth){
         return <BookLoader/>

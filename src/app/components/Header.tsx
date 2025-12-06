@@ -50,16 +50,12 @@ const Header = () => {
   );
 
   const user = useSelector((state: RootState) => state.user.user)
-  const [logoutMutation] = useLogoutMutation()
+  console.log(user)
+  
+  const [logoutMutation] = useLogoutMutation(); 
 
-  // ✅ Cambiado: placeholder con iniciales mayúsculas
-  const userPlaceholder = user?.name
-    ? user.name
-        .split(" ")
-        .map((n: string) => n[0])
-        .join("")
-        .toUpperCase()
-    : null;
+  const userPlaceholder = user?.name?.split(" ").map((name:string) => name[0]).join("")
+
 
   const handleLoginClick = () => {
     dispatch(toggleLoginDialog());
@@ -96,7 +92,7 @@ const Header = () => {
               <div className="flex space-x-4 items-center p-2 border-b">
                 <Avatar className="w-12 h-12 -ml-2 rounded-full">
                   {user?.profilePicture ? (
-                    <AvatarImage alt="user_image"></AvatarImage>
+                    <AvatarImage src={user.profilePicture} alt="user_image"></AvatarImage>
                   ) : (
                     <AvatarFallback>{userPlaceholder}</AvatarFallback>
                   )}
@@ -247,7 +243,7 @@ const Header = () => {
               <Button variant="ghost">
                 <Avatar className="w-8 h-8 rounded-full">
                   {user?.profilePicture ? (
-                    <AvatarImage alt="user_image"></AvatarImage>
+                    <AvatarImage src={user.profilePicture} alt="user_image"></AvatarImage>
                   ) : userPlaceholder ? (
                     <AvatarFallback>{userPlaceholder}</AvatarFallback>
                   ) : (
