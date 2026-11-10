@@ -50,6 +50,8 @@ const Header = () => {
   );
 
   const user = useSelector((state: RootState) => state.user.user);
+  const cartItems = useSelector((state: RootState) => state.cart?.items || []);
+  const cartCount = cartItems.reduce((acc, item) => acc + (item.quantity || 1), 0);
   
   const [logoutMutation] = useLogoutMutation(); 
 
@@ -261,9 +263,9 @@ const Header = () => {
                 <ShoppingCart className="h-5 w-5 mr-2" />
                 Carrito
               </Button>
-              {user && (
-                <span className="absolute top-2 left-5 transform translate-x-1/2  -translate-y-1/2 bg-red-500 text-white rounded-full px-1 text-xs">
-                  3
+              {cartCount > 0 && (
+                <span className="absolute top-2 left-5 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white rounded-full px-1.5 py-0.5 text-xs font-bold leading-none">
+                  {cartCount}
                 </span>
               )}
             </div>
@@ -327,9 +329,9 @@ const Header = () => {
             <Button variant="ghost" className="relative">
               <ShoppingCart className="h-5 w-5 mr-2" />
             </Button>
-            {user && (
-              <span className="absolute top-2 left-5 transform translate-x-1/2  -translate-y-1/2 bg-red-500 text-white rounded-full px-1 text-xs">
-                3
+            {cartCount > 0 && (
+              <span className="absolute top-2 left-5 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white rounded-full px-1.5 py-0.5 text-xs font-bold leading-none">
+                {cartCount}
               </span>
             )}
           </div>

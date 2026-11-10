@@ -18,6 +18,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { addToCart } from "@/store/slice/cartSlice";
 
 const Page = () => {
   const params = useParams();
@@ -25,6 +27,7 @@ const Page = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [isAddToCart, setIsAddToCart] = useState(false);
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const book = {
     _id: id,
@@ -55,10 +58,22 @@ const Page = () => {
 
   const handleAddToCart = () => {
     setIsAddToCart(true);
+    dispatch(
+      addToCart({
+        _id: book._id,
+        title: book.title,
+        price: book.price,
+        finalPrice: book.finalPrice,
+        image: bookImage[0] || "/images/book1.jpg",
+        author: book.author,
+        condition: book.condition,
+        quantity: 1,
+      })
+    );
     setTimeout(() => {
       setIsAddToCart(false);
       toast.success("¡Libro agregado al carrito!");
-    }, 1500);
+    }, 400);
   };
 
   const handleAddToWishList = (productId: string) => {
