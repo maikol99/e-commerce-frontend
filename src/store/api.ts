@@ -269,6 +269,7 @@ export const {
     useUpdateUserMutation,
 
     // Product hooks
+    useAddProductsMutation,
     useGetProductsQuery,
     useGetProductByIdQuery,
     useGetProductBySellerIdQuery,
