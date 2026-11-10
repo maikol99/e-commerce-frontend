@@ -1,44 +1,51 @@
-import React from 'react'
-import Image from 'next/image'
-
+import React from "react";
+import Image from "next/image";
 
 interface NoDataProps {
-    message: string
-    imageUrl: string
-    description: string
-    onClick: () => void
-    buttonText: string
+  message?: string;
+  imageUrl?: string;
+  description?: string;
+  onClick?: () => void;
+  buttonText?: string;
 }
 
-const NoData :React.FC<NoDataProps>=({message,imageUrl,description,onClick,buttonText='try again'}) => {
+const NoData: React.FC<NoDataProps> = ({
+  message = "No se encontraron libros",
+  imageUrl = "/images/no-data.png",
+  description = "Probá cambiando los filtros o buscando por otro término.",
+  onClick,
+  buttonText = "Volver a intentar",
+}) => {
   return (
-    <div className='flex flex-col items-center justify-center p-6 bg-white overflow-x-hidden sapce-y-6 mx-auto'>
-      <div className='relative w-60 md:w-80'>
-        <Image
-         src={imageUrl}
-         alt='no_data'
-         width={320}
-         height={320}
-         className='shadow-md hover:shadow-lg transition duration-300'
-        />
-      </div>
-      <div className='text-center max-w-md space-y-2'>
-        <p className='text-2xl font-bold text-gray-900 tracking-wide'>{message}</p>
-        <p className='text-base text-gray-600 loading-relaxed'>{description}</p>
-      </div>
+    <div className="flex flex-col items-center justify-center p-8 bg-white rounded-2xl border border-gray-100 shadow-sm mx-auto text-center">
+      {imageUrl && (
+        <div className="relative w-48 h-48 mb-4">
+          <Image
+            src={imageUrl}
+            alt="sin_datos"
+            width={200}
+            height={200}
+            className="object-contain mx-auto"
+          />
+        </div>
+      )}
+      <p className="text-xl font-bold text-gray-900 tracking-wide mb-1">
+        {message}
+      </p>
+      <p className="text-sm text-gray-500 max-w-sm mb-6 leading-relaxed">
+        {description}
+      </p>
 
       {onClick && (
         <button
-        onClick={onClick}
-        className='px-6 w-60 py-3 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-300 text-white font-medium rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transform transition duration-300 ease-in-out '
+          onClick={onClick}
+          className="px-6 py-2.5 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-xl shadow transition-colors cursor-pointer text-sm"
         >
-            {buttonText}
-
+          {buttonText}
         </button>
       )}
-
     </div>
-  )
-}
+  );
+};
 
-export default NoData
+export default NoData;

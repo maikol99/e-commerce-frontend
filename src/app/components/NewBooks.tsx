@@ -5,7 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { dot } from "node:test/reporters";
 
 const NewBooks = () => {
   const [currentBookSlide, setCurrentBookSlide] = useState(0);
@@ -36,7 +35,7 @@ const NewBooks = () => {
     <section className="py-16 bg-gray-50">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-12">
-          Newly added Books
+          Libros Recién Agregados
         </h2>
         <div className="relative">
           {books.length > 0 ? (
@@ -51,14 +50,15 @@ const NewBooks = () => {
                   {[0, 1, 2].map((slideIndex) => (
                     <div key={slideIndex} className="flex-none w-full">
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 ">
-                        {books.slice(slideIndex * 3, slideIndex * 3 + 3)
+                        {books
+                          .slice(slideIndex * 3, slideIndex * 3 + 3)
                           .map((book) => (
                             <Card key={book._id} className="relative">
                               <CardContent className="p-4">
-                                <Link href={`books/${book._id}`}>
+                                <Link href={`/books/${book._id}`}>
                                   <div className="relative">
                                     <Image
-                                      src={book.images[0]}
+                                      src={book.images?.[0] || "/images/book1.jpg"}
                                       alt={book.title}
                                       width={200}
                                       height={300}
@@ -73,7 +73,7 @@ const NewBooks = () => {
                                           book.price,
                                           book.finalPrice
                                         )}{" "}
-                                        %off
+                                        % OFF
                                       </span>
                                     )}
                                   </div>
@@ -97,7 +97,7 @@ const NewBooks = () => {
                                   </div>
                                   <div className="pt-4">
                                     <Button className=" flex float-end mb-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:bg-orange-600 hover:from-orange-600 hover:to-orange-600 ">
-                                      Buy Now
+                                      Comprar Ahora
                                     </Button>
                                   </div>
                                 </Link>
@@ -113,6 +113,7 @@ const NewBooks = () => {
               <button
                 className="absolute left-0 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow-md"
                 onClick={prevSlide}
+                aria-label="Anterior"
               >
                 <ChevronLeft className="h-6 w-6" />
               </button>
@@ -120,27 +121,27 @@ const NewBooks = () => {
               <button
                 className="absolute right-0 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow-md"
                 onClick={NextSlide}
+                aria-label="Siguiente"
               >
                 <ChevronRight className="h-6 w-6" />
               </button>
 
               {/*dot animation*/}
-
               <div className="mt-8 flex justify-center space-x-2">
-                {[0,1,2].map((dot) =>(
-                  <button 
-                  key={dot}
-                  onClick={() =>setCurrentBookSlide(dot)}
-                  className={`h-3 w-3 rounded-full ${currentBookSlide === dot ? 'bg-blue-600' : "bg-gray-300"}`} 
-                  >
-
-                  </button>
+                {[0, 1, 2].map((dot) => (
+                  <button
+                    key={dot}
+                    onClick={() => setCurrentBookSlide(dot)}
+                    className={`h-3 w-3 rounded-full ${
+                      currentBookSlide === dot ? "bg-blue-600" : "bg-gray-300"
+                    }`}
+                    aria-label={`Slide ${dot + 1}`}
+                  />
                 ))}
               </div>
-
             </>
           ) : (
-            <p className="text-center text-gray-500"> No books to display</p>
+            <p className="text-center text-gray-500">No hay libros para mostrar</p>
           )}
         </div>
       </div>

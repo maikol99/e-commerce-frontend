@@ -60,133 +60,89 @@ const AuthPage: React.FC<LoginProps> = ({ isLoginOpen, setIsLoginOpen }) => {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [forgotPasswordLoading, setForgotPasswordLoading] = useState(false);
 
-  const [register] = useRegisterMutation()
-  const [login ] = useLoginMutation()
-  const [forgotPassword] = useForgotPasswordMutation()
-  const dispatch = useDispatch()
+  const [register] = useRegisterMutation();
+  const [login] = useLoginMutation();
+  const [forgotPassword] = useForgotPasswordMutation();
+  const dispatch = useDispatch();
   const router = useRouter();
-
 
   const {
     register: registerLogin,
     handleSubmit: handleLoginSubmit,
     formState: { errors: loginError },
   } = useForm<LoginFormData>();
+
   const {
     register: registerSignUp,
     handleSubmit: handleSignUpSubmit,
     formState: { errors: signupError },
   } = useForm<SignUpFormData>();
+
   const {
     register: registerForgotPassword,
     handleSubmit: handleForgotPasswordSubmit,
     formState: { errors: forgotPasswordError },
   } = useForm<forgotPasswordFormData>();
 
-
-  const onSubmitSignUp = async (data:SignUpFormData ) => {
-    setSignupLoading(true)
-
+  const onSubmitLogin = async (data: LoginFormData) => {
+    setLoginLoading(true);
     try {
-      const {email,password,name} = data;
-      const result = await register({email,password,name}).unwrap()
-      console.log('this is register result',result)
-      if(result.success) {
-        toast.success('verification link send to email sucessfully. please verify your email')
-        dispatch(toggleLoginDialog())
-        // Esperar un poco para que el toast se muestre antes de recargar
-        setTimeout(() => {
-          window.location.reload();
-        }, 1500)
+      const response = await login(data).unwrap();
+      if (response.success) {
+        toast.success("¡Inicio de sesión exitoso!");
+        const userData = response.data?.user || response.data;
+        dispatch(setUser(userData));
+        dispatch(authStatus());
+        setIsLoginOpen(false);
       }
-    } catch (error) {
-      console.log(error)
-      toast.error('Email already registered')
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Error al iniciar sesión. Verificá tus credenciales.");
+    } finally {
+      setLoginLoading(false);
     }
-    finally{
-      setSignupLoading(false)
-    }
-  }
+  };
 
-
-
-  const onSubmitLogin = async (data:LoginFormData ) => {
-    setLoginLoading(true)
+  const onSubmitSignUp = async (data: SignUpFormData) => {
+    setSignupLoading(true);
     try {
-      const result = await login(data).unwrap()
-      console.log('this is login result',result)
-      if(result.success) {
-        // ✅ Guardar los datos del usuario en el store
-        if(result.data && result.data.user) {
-          dispatch(setUser(result.data.user))
-        }
-        toast.success('User Login Succesfully')
-        dispatch(toggleLoginDialog()) // ✅ Cierra el modal
-        dispatch(authStatus()) // ✅ Marca como logueado
-        // Esperar un poco para que el toast se muestre antes de recargar
-        setTimeout(() => {
-          window.location.reload();
-        }, 1500)
+      const response = await register(data).unwrap();
+      if (response.success) {
+        toast.success(response.message || "Cuenta creada exitosamente. Ya podés ingresar.");
+        setCurrentTab("login");
       }
-    } catch (error) {
-      console.log(error)
-      toast.error('Email or password is incorrect')
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Error al registrarse.");
+    } finally {
+      setSignupLoading(false);
     }
-    finally{
-      setLoginLoading(false)
-    }
-  }
+  };
 
+  const handleGoogleLogin = () => {
+    setGoogleLoading(true);
+    window.location.href = `${BASE_URL}/auth/google`;
+  };
 
-
-  const handleGoogleLogin = async () => {
-    setGoogleLoading(true)
+  const onSubmitForgotPassword = async (data: forgotPasswordFormData) => {
+    setForgotPasswordLoading(true);
     try {
-      // Cerrar el modal antes de redirigir
-      dispatch(toggleLoginDialog())
-      // Redirigir a Google OAuth
-      router.push(`${BASE_URL}/auth/google`)
-      // No hacer dispatch(authStatus()) aquí porque el usuario aún no está autenticado
-      // El AuthCheck verificará la autenticación cuando el usuario vuelva del callback
-    }catch (error) {
-      console.log(error)
-      toast.error('Error al iniciar sesión con Google')
-    }
-    finally{
-      setGoogleLoading(false)
-    }
-  }
-
-
-  const onSubmitForgotPassword = async (data:forgotPasswordFormData ) => {
-    setForgotPasswordLoading(true)
-
-    try {
-      const result = await forgotPassword(data.email).unwrap()
-      if(result.success) {
-        // ✅ Guardar los datos del usuario en el store
-        if(result.data && result.data.user) {
-          dispatch(setUser(result.data.user))
-        }
-        toast.success('Password reset link sent to your email successfully')
-        setForgotPasswordSuccess(true)
+      const response = await forgotPassword(data).unwrap();
+      if (response.success) {
+        toast.success("Te enviamos el enlace de restablecimiento a tu email.");
+        setForgotPasswordSuccess(true);
       }
-    } catch (error) {
-      console.log(error)
-      toast.error('Failed to send the password reset link to email. please try later')
+    } catch (error: any) {
+      toast.error(error?.data?.message || "No se pudo enviar el correo de recuperación.");
+    } finally {
+      setForgotPasswordLoading(false);
     }
-    finally{
-      setForgotPasswordLoading(false)
-    }
-  }
-
+  };
 
   return (
     <Dialog open={isLoginOpen} onOpenChange={setIsLoginOpen}>
       <DialogContent className="sm:max-w-[425px] p-6">
         <DialogHeader>
           <DialogTitle className="text-center text-2xl font-bold mb-4">
-            Welcome to Book Kart
+            Bienvenido a BookKart
           </DialogTitle>
           <Tabs
             value={currentTab}
@@ -195,9 +151,9 @@ const AuthPage: React.FC<LoginProps> = ({ isLoginOpen, setIsLoginOpen }) => {
             }
           >
             <TabsList className="grid w-full grid-cols-3 mb-6">
-              <TabsTrigger value="login">Login</TabsTrigger>
-              <TabsTrigger value="signup">Sign Up</TabsTrigger>
-              <TabsTrigger value="forgot">Forgot</TabsTrigger>
+              <TabsTrigger value="login">Ingresar</TabsTrigger>
+              <TabsTrigger value="signup">Registrarse</TabsTrigger>
+              <TabsTrigger value="forgot">Olvidé clave</TabsTrigger>
             </TabsList>
 
             <AnimatePresence mode="wait">
@@ -213,19 +169,19 @@ const AuthPage: React.FC<LoginProps> = ({ isLoginOpen, setIsLoginOpen }) => {
                     <div className="relative">
                       <Input
                         {...registerLogin("email", {
-                          required: "Email is required",
+                          required: "El email es obligatorio",
                         })}
-                        placeholder="Email"
+                        placeholder="Correo electrónico"
                         type="email"
                         className="pl-10"
                       />
                       <Mail
                         className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
                         size={20}
-                      ></Mail>
+                      />
                     </div>
                     {loginError.email && (
-                      <p className="text-red-500 text-sw">
+                      <p className="text-red-500 text-xs">
                         {loginError.email.message}
                       </p>
                     )}
@@ -233,9 +189,9 @@ const AuthPage: React.FC<LoginProps> = ({ isLoginOpen, setIsLoginOpen }) => {
                     <div className="relative">
                       <Input
                         {...registerLogin("password", {
-                          required: "Password is required",
+                          required: "La contraseña es obligatoria",
                         })}
-                        placeholder="Password"
+                        placeholder="Contraseña"
                         type={showPassword ? "text" : "password"}
                         className="pl-10"
                       />
@@ -258,51 +214,57 @@ const AuthPage: React.FC<LoginProps> = ({ isLoginOpen, setIsLoginOpen }) => {
                       )}
                     </div>
                     {loginError.password && (
-                      <p className="text-red-500 text-sw">
+                      <p className="text-red-500 text-xs">
                         {loginError.password.message}
                       </p>
                     )}
 
-                    <Button type="submit" className="w-full font-bold ">
+                    <Button type="submit" className="w-full font-bold">
                       {loginLoading ? (
-                        <Loader2 className="minimate-spin mr-2" size={20} />
+                        <Loader2 className="animate-spin mr-2" size={20} />
                       ) : (
-                        "login"
+                        "Iniciar Sesión"
                       )}
                     </Button>
                   </form>
+
                   <div className="flex items-center my-4">
                     <div className="flex-1 h-px bg-gray-300"></div>
-                    <p className="mx-2 text-gray-500 text-sm">Or</p>
+                    <p className="mx-2 text-gray-500 text-sm">O</p>
                     <div className="flex-1 h-px bg-gray-300"></div>
                   </div>
-                  <Button onClick={handleGoogleLogin} className="w-full flex items-center justify-center gap-2 bg-white text-gray-700 border border-gray-300 hover:bg-gray-50">
+
+                  <Button
+                    onClick={handleGoogleLogin}
+                    className="w-full flex items-center justify-center gap-2 bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                  >
                     {googleLoading ? (
                       <>
-                        <Loader2 className="minimate-spin mr-2" size={20} />
-                        Login whit Google...
+                        <Loader2 className="animate-spin mr-2" size={20} />
+                        Conectando con Google...
                       </>
                     ) : (
                       <>
                         <Image
                           src="/icons/google.svg"
-                          alt="/google"
+                          alt="google"
                           width={20}
                           height={20}
                         />
-                        Login whit Google
+                        Continuar con Google
                       </>
                     )}
                   </Button>
                 </TabsContent>
+
                 <TabsContent value="signup" className="space-y-4">
-                  <form  onSubmit={handleSignUpSubmit(onSubmitSignUp)} className="space-y-4">
+                  <form onSubmit={handleSignUpSubmit(onSubmitSignUp)} className="space-y-4">
                     <div className="relative">
                       <Input
                         {...registerSignUp("name", {
-                          required: "Name is required",
+                          required: "El nombre es obligatorio",
                         })}
-                        placeholder="Name"
+                        placeholder="Nombre completo"
                         type="text"
                         className="pl-10"
                       />
@@ -312,7 +274,7 @@ const AuthPage: React.FC<LoginProps> = ({ isLoginOpen, setIsLoginOpen }) => {
                       />
                     </div>
                     {signupError.name && (
-                      <p className="text-red-500 text-sw">
+                      <p className="text-red-500 text-xs">
                         {signupError.name.message}
                       </p>
                     )}
@@ -320,9 +282,9 @@ const AuthPage: React.FC<LoginProps> = ({ isLoginOpen, setIsLoginOpen }) => {
                     <div className="relative">
                       <Input
                         {...registerSignUp("email", {
-                          required: "Email is required",
+                          required: "El email es obligatorio",
                         })}
-                        placeholder="Email"
+                        placeholder="Correo electrónico"
                         type="email"
                         className="pl-10"
                       />
@@ -332,7 +294,7 @@ const AuthPage: React.FC<LoginProps> = ({ isLoginOpen, setIsLoginOpen }) => {
                       />
                     </div>
                     {signupError.email && (
-                      <p className="text-red-500 text-sw">
+                      <p className="text-red-500 text-xs">
                         {signupError.email.message}
                       </p>
                     )}
@@ -340,9 +302,9 @@ const AuthPage: React.FC<LoginProps> = ({ isLoginOpen, setIsLoginOpen }) => {
                     <div className="relative">
                       <Input
                         {...registerSignUp("password", {
-                          required: "Password is required",
+                          required: "La contraseña es obligatoria",
                         })}
-                        placeholder="Password"
+                        placeholder="Contraseña"
                         type={showPassword ? "text" : "password"}
                         className="pl-10"
                       />
@@ -365,7 +327,7 @@ const AuthPage: React.FC<LoginProps> = ({ isLoginOpen, setIsLoginOpen }) => {
                       )}
                     </div>
                     {signupError.password && (
-                      <p className="text-red-500 text-sw">
+                      <p className="text-red-500 text-xs">
                         {signupError.password.message}
                       </p>
                     )}
@@ -375,59 +337,60 @@ const AuthPage: React.FC<LoginProps> = ({ isLoginOpen, setIsLoginOpen }) => {
                         type="checkbox"
                         {...registerSignUp("agreeTerms", {
                           required:
-                            "you must agree to the terms and conditions",
+                            "Debés aceptar los términos y condiciones",
                         })}
                         className="mr-2"
                       />
 
                       <label className="text-sm text-gray-700">
-                        I agree to the Terms & Conditions
+                        Acepto los Términos y Condiciones
                       </label>
                     </div>
 
                     {signupError.agreeTerms && (
-                      <p className="text-red-500 text-sw">
+                      <p className="text-red-500 text-xs">
                         {signupError.agreeTerms.message}
                       </p>
                     )}
 
-                    <Button type="submit" className="w-full font-bold ">
+                    <Button type="submit" className="w-full font-bold">
                       {signupLoading ? (
-                        <Loader2 className="minimate-spin mr-2" size={20} />
+                        <Loader2 className="animate-spin mr-2" size={20} />
                       ) : (
-                        "Sign Up"
+                        "Registrarse"
                       )}
                     </Button>
                   </form>
                 </TabsContent>
+
                 <TabsContent value="forgot" className="space-y-4">
                   {!forgotPasswordSuccess ? (
                     <form className="space-y-4" onSubmit={handleForgotPasswordSubmit(onSubmitForgotPassword)}>
                       <div className="relative">
                         <Input
                           {...registerForgotPassword("email", {
-                            required: "Email is required",
+                            required: "El email es obligatorio",
                           })}
-                          placeholder="Email"
+                          placeholder="Correo electrónico"
                           type="email"
                           className="pl-10"
                         />
                         <Mail
                           className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
                           size={20}
-                        ></Mail>
+                        />
                       </div>
                       {forgotPasswordError.email && (
-                        <p className="text-red-500 text-sw">
+                        <p className="text-red-500 text-xs">
                           {forgotPasswordError.email.message}
                         </p>
                       )}
 
-                      <Button type="submit" className="w-full font-bold ">
+                      <Button type="submit" className="w-full font-bold">
                         {forgotPasswordLoading ? (
-                          <Loader2 className="minimate-spin mr-2" size={20} />
+                          <Loader2 className="animate-spin mr-2" size={20} />
                         ) : (
-                          "Send Reset Link"
+                          "Enviar Enlace de Recuperación"
                         )}
                       </Button>
                     </form>
@@ -439,37 +402,38 @@ const AuthPage: React.FC<LoginProps> = ({ isLoginOpen, setIsLoginOpen }) => {
                     >
                       <CheckCircle className="w-16 h-16 text-green-500 mx-auto" />
                       <h3 className="text-xl font-semibold text-gray-700">
-                        Reset Link Send
+                        Enlace Enviado
                       </h3>
-                      <p className="text-gray-700">
-                        `We've sent a password reset link to your email. Please
-                        check your inbox and follow the instructions to reset
-                        your password.`
+                      <p className="text-gray-700 text-sm">
+                        Te enviamos un enlace para restablecer tu contraseña. Por favor
+                        revisá tu casilla de correo y seguí las instrucciones.
                       </p>
                       <Button
                         onClick={() => setForgotPasswordSuccess(false)}
                         className="w-full"
                       >
-                        Send Another Link to Email
+                        Enviar otro correo
                       </Button>
                     </motion.div>
                   )}
                 </TabsContent>
-                <p className="text-sm text-center mt-2 text-gray-600">
-                  By clicking "agree", you agree to our {""}
+
+                <p className="text-xs text-center mt-3 text-gray-500">
+                  Al continuar, aceptás nuestros{" "}
                   <Link
                     href="/terms-of-use"
                     className="text-blue-500 hover:underline"
                   >
-                    Term of Use
+                    Términos de Uso
                   </Link>
-                  ,{""}
+                  {" y nuestra "}
                   <Link
                     href="/privacy-policy"
                     className="text-blue-500 hover:underline"
                   >
-                    Privacy Policy
+                    Política de Privacidad
                   </Link>
+                  .
                 </p>
               </motion.div>
             </AnimatePresence>

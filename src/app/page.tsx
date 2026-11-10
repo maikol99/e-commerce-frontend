@@ -1,6 +1,6 @@
-"use client"; // Indica que este componente se ejecuta del lado del cliente (React/Next.js con interactividad)
+"use client";
 
-import { Button } from "@/components/ui/button"; // Importa el componente de botón personalizado
+import { Button } from "@/components/ui/button";
 import {
   ArrowRight,
   BookOpen,
@@ -13,11 +13,11 @@ import {
   Tag,
   Truck,
   Wallet,
-} from "lucide-react"; // Íconos usados en las distintas secciones
-import Image from "next/image"; // Componente optimizado de imágenes de Next.js
-import { useEffect, useState } from "react"; // Hooks de React
-import Link from "next/link"; // Para navegación interna sin recargar página
-import NewBooks from "./components/NewBooks"; // Componente que muestra los libros nuevos
+} from "lucide-react";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import NewBooks from "./components/NewBooks";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function Home() {
@@ -28,30 +28,30 @@ export default function Home() {
     "/images/book3.jpg",
   ];
 
-  // 📚 Publicaciones del blog (no se renderizan en este fragmento)
+  // 📚 Publicaciones del blog
   const blogPosts = [
     {
       imageSrc:
         "https://images.unsplash.com/photo-1604866830893-c13cafa515d5?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8b25saW5lJTIwc2VsbCUyMGJvb2tzfGVufDB8fDB8fHww",
-      title: "Where and how to sell old books online?",
+      title: "¿Dónde y cómo vender libros usados por internet?",
       description:
-        "Get started with selling your used books online and earn money from your old books.",
+        "Empezá a vender tus libros usados por internet y ganá dinero con tus libros leídos.",
       icon: <BookOpen className="w-6 h-6 text-primary" />,
     },
     {
       imageSrc:
         "https://media.istockphoto.com/id/910384920/photo/kid-reading-near-locked-door.webp?a=1&b=1&s=612x612&w=0&k=20&c=J3FL4ZVORItw_bkLzlVo4WO-xUy22S7Qqbuq2xusNnc=",
-      title: "What to do with old books?",
+      title: "¿Qué hacer con los libros que ya leíste?",
       description:
-        "Learn about different ways to make use of your old books and get value from them.",
+        "Descubrí diferentes formas de aprovechar tus libros usados y darles un nuevo valor.",
       icon: <Library className="w-6 h-6 text-primary" />,
     },
     {
       imageSrc:
         "https://images.unsplash.com/photo-1492539438225-2666b2a98f93?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fG9sZCUyMCUyMGJvb2tzfGVufDB8fDB8fHww",
-      title: "What is BookKart?",
+      title: "¿Qué es BookKart?",
       description:
-        "Discover how BookKart helps you buy and sell used books online easily.",
+        "Descubrí cómo BookKart te ayuda a comprar y vender libros usados online de forma simple.",
       icon: <Store className="w-6 h-6 text-primary" />,
     },
   ];
@@ -59,24 +59,24 @@ export default function Home() {
   // 🟡 Pasos para vender libros
   const sellSteps = [
     {
-      step: "Step 1",
-      title: "Post an ad for selling used books",
+      step: "Paso 1",
+      title: "Publicá un anuncio para vender libros usados",
       description:
-        "Post an ad on BookKart describing your book details to sell your old books online.",
+        "Publicá un anuncio en BookKart detallando la información de tu libro usado.",
       icon: <Camera className="h-8 w-8 text-primary" />,
     },
     {
-      step: "Step 2",
-      title: "Set the selling price for your books",
+      step: "Paso 2",
+      title: "Establecé el precio de venta de tus libros",
       description:
-        "Set the price for your books at which you want to sell them.",
+        "Elegí el precio al que querés vender tus libros según su estado.",
       icon: <Tag className="h-8 w-8 text-primary" />,
     },
     {
-      step: "Step 3",
-      title: "Get paid into your UPI/Bank account",
+      step: "Paso 3",
+      title: "Recibí el dinero en tu cuenta bancaria o alias",
       description:
-        "You will get money into your account once you receive an order for your book.",
+        "Recibirás el dinero en tu cuenta en cuanto recibas un pedido por tu libro.",
       icon: <Wallet className="h-8 w-8 text-primary" />,
     },
   ];
@@ -84,23 +84,23 @@ export default function Home() {
   // 🔵 Pasos para comprar libros
   const buySteps = [
     {
-      step: "Step 1",
-      title: "Select the used books you want",
+      step: "Paso 1",
+      title: "Elegí los libros usados que querés",
       description:
-        "Search from over thousands of used books listed on BookKart.",
+        "Buscá entre miles de libros usados publicados en BookKart.",
       icon: <Search className="h-8 w-8 text-primary" />,
     },
     {
-      step: "Step 2",
-      title: "Place the order by making payment",
+      step: "Paso 2",
+      title: "Realizá el pedido realizando el pago",
       description:
-        "Then simply place the order by clicking on the 'Buy Now' button.",
+        "Simplemente hacé el pedido haciendo clic en el botón 'Comprar Ahora'.",
       icon: <CreditCard className="h-8 w-8 text-primary" />,
     },
     {
-      step: "Step 3",
-      title: "Get the books delivered at your doorstep",
-      description: "The books will be delivered to you at your doorstep!",
+      step: "Paso 3",
+      title: "Recibí los libros en la puerta de tu casa",
+      description: "¡Los libros te serán entregados directo en tu puerta!",
       icon: <Truck className="h-8 w-8 text-primary" />,
     },
   ];
@@ -143,7 +143,7 @@ export default function Home() {
         {/* Texto e información del banner */}
         <div className="relative container mx-auto px-4 h-full flex flex-col items-center justify-center text-white text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-8">
-            Buy and Sell Old Books Online in Argentina
+            Comprá y Vendé Libros Usados Online en Argentina
           </h1>
 
           {/* Botones principales */}
@@ -157,10 +157,10 @@ export default function Home() {
                 <div className="bg-white/20 p-2 rounded-lg group-hover:bg-white/30 translation-colors">
                   <ShoppingBag className="h-6 w-6" />
                 </div>
-                <Link href="/Books">
+                <Link href="/books">
                   <div className="text-left">
-                    <div className="text-sm opacity-90">Start Shopping</div>
-                    <div className="font-semibold">Buy Used Books</div>
+                    <div className="text-sm opacity-90">Empezar a Comprar</div>
+                    <div className="font-semibold">Comprar Libros Usados</div>
                   </div>
                 </Link>
               </div>
@@ -175,10 +175,10 @@ export default function Home() {
                 <div className="bg-black/20 p-2 rounded-lg group-hover:bg-black/30 translation-colors">
                   <ShoppingBag className="h-6 w-6" />
                 </div>
-                <Link href="/Books-sell">
+                <Link href="/book-sell">
                   <div className="text-left">
-                    <div className="text-sm opacity-90">Start Selling</div>
-                    <div className="font-semibold">Sell Old Books</div>
+                    <div className="text-sm opacity-90">Empezar a Vender</div>
+                    <div className="font-semibold">Vender Libros Usados</div>
                   </div>
                 </Link>
               </div>
@@ -196,7 +196,7 @@ export default function Home() {
         className="flex mt-10 mb-10 mx-auto bg-yellow-500 px-8 py-6 rounded-xl"
       >
         <Link href="/books">
-          <div className="text-sm">Explore All Books</div>
+          <div className="text-sm">Explorar Todos los Libros</div>
         </Link>
       </Button>
 
@@ -206,11 +206,10 @@ export default function Home() {
           {/* Título y descripción */}
           <div className="text-center mb-4">
             <h2 className="text-3xl font-bold mb-4">
-              How to SELL your old books online on BookKart?
+              ¿Cómo VENDER tus libros usados online en BookKart?
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Earning money by selling your old books is just 3 steps away from
-              you :)
+              Ganar dinero vendiendo tus libros leídos está a solo 3 pasos de distancia :)
             </p>
           </div>
 
@@ -246,11 +245,10 @@ export default function Home() {
           {/* Título y descripción */}
           <div className="text-center mb-4">
             <h2 className="text-3xl font-bold mb-4">
-              How to BUY second hand books online on BookKart?
+              ¿Cómo COMPRAR libros usados online en BookKart?
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Saving some good amount of money by buying used books is just 3
-              steps away from you :)
+              Ahorrar una buena cantidad de dinero comprando libros usados está a solo 3 pasos :)
             </p>
           </div>
 
@@ -282,7 +280,7 @@ export default function Home() {
       <section className="py-16 bg-[rgb(221,234,254)]">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold mb-12 text-center">
-            Read from our <span className="text-primary">Blog</span>
+            Leé nuestro <span className="text-primary">Blog</span>
           </h2>
 
           <div className="grid md:grid-cols-3 gap-8">
@@ -307,7 +305,7 @@ export default function Home() {
                   <h3 className="font-semibold mb-2">{post.title}</h3>
                   <p className="text-sm text-gray-600 flex-grow">{post.description}</p>
                   <Button variant='link'className="mt-4 p-0 flex items-center text-primary">
-                    Read more <ArrowRight className="w-4 h-4"/>
+                    Leer más <ArrowRight className="w-4 h-4 ml-1"/>
                   </Button>
                 </CardContent>
               </Card>

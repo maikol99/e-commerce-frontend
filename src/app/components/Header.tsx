@@ -49,13 +49,11 @@ const Header = () => {
     (state: RootState) => state.user.isLoginDialogOpen
   );
 
-  const user = useSelector((state: RootState) => state.user.user)
-  console.log(user)
+  const user = useSelector((state: RootState) => state.user.user);
   
   const [logoutMutation] = useLogoutMutation(); 
 
-  const userPlaceholder = user?.name?.split(" ").map((name:string) => name[0]).join("")
-
+  const userPlaceholder = user?.name?.split(" ").map((name:string) => name[0]).join("");
 
   const handleLoginClick = () => {
     dispatch(toggleLoginDialog());
@@ -73,13 +71,13 @@ const Header = () => {
   };
 
   const handleLogout = async() => {
-    try{
-      await logoutMutation({}).unwrap()   
+    try {
+      await logoutMutation({}).unwrap();   
       dispatch(logout()); 
-      toast.success('user logged out successfully')
-      setIsDropdownOpen(false)
-    }catch{
-      toast.error('failed to logout')
+      toast.success("Sesión cerrada correctamente");
+      setIsDropdownOpen(false);
+    } catch {
+      toast.error("Error al cerrar sesión");
     }
   };
 
@@ -87,7 +85,7 @@ const Header = () => {
     ...(user && user
       ? [
           {
-            href: "account/profile",
+            href: "/account/profile",
             content: (
               <div className="flex space-x-4 items-center p-2 border-b">
                 <Avatar className="w-12 h-12 -ml-2 rounded-full">
@@ -108,62 +106,62 @@ const Header = () => {
       : [
           {
             icon: <Lock className="h-5 w-5" />,
-            label: "Login/sign Up",
+            label: "Ingresar / Registrarse",
             onClick: handleLoginClick,
           },
         ]),
 
     {
       icon: <User className="h-5 w-5" />,
-      label: "My profile",
+      label: "Mi Perfil",
       onClick: () => handleProtectionNavigation("/account/profile"),
     },
     {
       icon: <Package className="h-5 w-5" />,
-      label: "My Orders",
+      label: "Mis Pedidos",
       onClick: () => handleProtectionNavigation("/account/orders"),
     },
     {
       icon: <PiggyBank className="h-5 w-5" />,
-      label: "My Selling Orders",
+      label: "Mis Libros en Venta",
       onClick: () => handleProtectionNavigation("/account/selling-products"),
     },
     {
       icon: <ShoppingCart className="h-5 w-5" />,
-      label: "Cart",
+      label: "Carrito",
       onClick: () => handleProtectionNavigation("/checkout/cart"),
     },
     {
       icon: <Heart className="h-5 w-5" />,
-      label: "My Whislist",
+      label: "Lista de Deseos",
       onClick: () => handleProtectionNavigation("/account/wishList"),
     },
     {
       icon: <User2 className="h-5 w-5" />,
-      label: "About Us",
+      label: "Sobre Nosotros",
       href: "/about-us",
     },
     {
       icon: <FileTerminal className="h-5 w-5" />,
-      label: "Terms & Use",
-      href: "/terms-of-use",
+      label: "Términos y Condiciones",
+      href: "/terms-of-user",
     },
     {
       icon: <BookLock className="h-5 w-5" />,
-      label: "Privacy Policy",
-      href: "/Privacy-policy",
+      label: "Política de Privacidad",
+      href: "/privacy-policy",
     },
     {
       icon: <HelpCircle className="h-5 w-5" />,
-      label: "Help",
+      label: "Ayuda",
       href: "/how-it-work",
     },
     ...(user && user 
       ? [
           {
             icon: <LogOut className="h-5 w-5" />,
-            label: "Logout",
-            onClick: handleLogout, // ✅ Corregido también esto
+            label: "Cerrar Sesión",
+            onClick: handleLogout,
           },
         ]
       : []),
@@ -216,7 +214,7 @@ const Header = () => {
           <div className="relative w-full">
             <Input
               type="text"
-              placeholder="Book Name / Author / Subject / Publisher"
+              placeholder="Título / Autor / Género / Editorial..."
               className="w-full pr-10"
             />
             <Button
@@ -234,7 +232,7 @@ const Header = () => {
               variant="secondary"
               className="bg-yellow-400 text-gray-900 hover:bg-yellow-500"
             >
-              Sell Used Book
+              Vender Libro Usado
             </Button>
           </Link>
 
@@ -250,7 +248,7 @@ const Header = () => {
                     <User className="ml-2 mt-2" />
                   )}
                 </Avatar>
-                My Account
+                Mi Cuenta
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-80 p-2">
@@ -261,7 +259,7 @@ const Header = () => {
             <div className="relative">
               <Button variant="ghost" className="relative">
                 <ShoppingCart className="h-5 w-5 mr-2" />
-                Cart
+                Carrito
               </Button>
               {user && (
                 <span className="absolute top-2 left-5 transform translate-x-1/2  -translate-y-1/2 bg-red-500 text-white rounded-full px-1 text-xs">
@@ -283,7 +281,7 @@ const Header = () => {
           </SheetTrigger>
           <SheetContent side="left" className="w-80 p-0">
             <SheetHeader>
-              <SheetTitle className="sr-only"></SheetTitle>
+              <SheetTitle className="sr-only">Menú</SheetTitle>
             </SheetHeader>
             <div className="border-b p-4">
               <Link href="/">
@@ -312,7 +310,7 @@ const Header = () => {
           <div className="relative w-full">
             <Input
               type="text"
-              placeholder="Search books..."
+              placeholder="Buscar libros..."
               className="w-full pr-10"
             />
             <Button

@@ -11,6 +11,7 @@ import {
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { formatDistanceToNow } from "date-fns";
+import { es } from "date-fns/locale";
 import BookLoader from "@/lib/BookLoader";
 import {
   Select,
@@ -28,6 +29,12 @@ import { Heart } from "lucide-react";
 import Pagination from "../components/Pagination";
 import NoData from "../components/NoData";
 import { useRouter } from "next/navigation";
+
+const filterLabelMap: Record<string, string> = {
+  condition: "Estado del Libro",
+  classType: "Nivel / Tipo",
+  category: "Categoría",
+};
 
 const page = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -117,7 +124,7 @@ const page = () => {
 
   const formatDate = (dateString: Date) => {
     const date = new Date(dateString);
-    return formatDistanceToNow(date, { addSuffix: true });
+    return formatDistanceToNow(date, { addSuffix: true, locale: es });
   };
 
   return (
@@ -125,16 +132,14 @@ const page = () => {
       <div className="container mx-auto px-4 py-8">
         <nav className="mb-8 flex items-center gap-2 text-sm text-muted-foreground">
           <Link href="/" className="text-primary hover:underline">
-            {" "}
-            Home{" "}
+            Inicio
           </Link>
           <span>/</span>
-          <span>Books</span>
+          <span>Libros</span>
         </nav>
 
         <h1 className="mb-8 text-3xl font-bold">
-          {" "}
-          Find from over 1000s of used books online{" "}
+          Encontrá entre miles de libros usados online
         </h1>
 
         <div className="grid gap-8 md:grid-cols-[280px_1fr]">
@@ -146,8 +151,8 @@ const page = () => {
             >
               {Object.entries(filters).map(([key, values]) => (
                 <AccordionItem key={key} value={key}>
-                  <AccordionTrigger className="flex justify-between items-center px-6 py-4 w-full text-lg hover:underline font-semibold underline- text-blue-500">
-                    {key.charAt(0).toUpperCase() + key.slice(1)}
+                  <AccordionTrigger className="flex justify-between items-center px-6 py-4 w-full text-lg hover:underline font-semibold text-blue-500">
+                    {filterLabelMap[key] || key.charAt(0).toUpperCase() + key.slice(1)}
                   </AccordionTrigger>
                   <AccordionContent>
                     <div className="mt-2 space-y-2">
@@ -169,7 +174,7 @@ const page = () => {
                           />
                           <label
                             htmlFor={value}
-                            className="text-sm font-medium leading-none"
+                            className="text-sm font-medium leading-none cursor-pointer"
                           >
                             {value}
                           </label>
@@ -186,19 +191,19 @@ const page = () => {
               <BookLoader />
             ) : paginatedBooks.length ? (
               <>
-                <div className="flex justify-between">
+                <div className="flex justify-between items-center">
                   <div className="mb-8 text-xl font-semibold">
-                    Buy Second Hand Books, Used Books Online In India
+                    Comprá Libros Usados Online en Argentina
                   </div>
                   <Select value={sortOption} onValueChange={setSortOption}>
-                    <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="Sort By" />
+                    <SelectTrigger className="w-[190px]">
+                      <SelectValue placeholder="Ordenar por" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="newest">Newest First</SelectItem>
-                      <SelectItem value="oldest">Oldest First</SelectItem>
-                      <SelectItem value="price-low">Price: Low to High</SelectItem>
-                      <SelectItem value="price-high">Price: High To Low</SelectItem> 
+                      <SelectItem value="newest">Más recientes</SelectItem>
+                      <SelectItem value="oldest">Más antiguos</SelectItem>
+                      <SelectItem value="price-low">Precio: menor a mayor</SelectItem>
+                      <SelectItem value="price-high">Precio: mayor a menor</SelectItem> 
                     </SelectContent>
                   </Select>
                 </div>
@@ -217,7 +222,7 @@ const page = () => {
                           <Link href={`/books/${book._id}`}>
                             <div className="relative">
                               <Image
-                                src={book.images[0]}
+                                src={book.images?.[0] || "/images/book1.jpg"}
                                 alt={book.title}
                                 width={400}
                                 height={300}
@@ -233,7 +238,7 @@ const page = () => {
                                       book.price,
                                       book.finalPrice
                                     )}{" "}
-                                    % Off
+                                    % OFF
                                   </Badge>
                                 )}
                               </div>
@@ -257,12 +262,11 @@ const page = () => {
 
                               <div className="flex items-baseline gap-2">
                                 <span className="text-2xl font-bold text-black">
-                                  {" "}
                                   ${book.finalPrice}
                                 </span>
                                 {book.price && (
                                   <span className="text-sm text-zinc-500 line-through">
-                                    {book.price}
+                                    ${book.price}
                                   </span>
                                 )}
                               </div>
@@ -288,10 +292,10 @@ const page = () => {
             ) : (
               <NoData
                 imageUrl="/images/no-book.jpg"
-                message="No books available please try later."
-                description="Try adjusting your filters or search criteria to find what you're looking for."
+                message="No hay libros disponibles en este momento."
+                description="Probá ajustando los filtros o el criterio de búsqueda para encontrar lo que buscás."
                 onClick={() => router.push("/book-sell")}
-                buttonText="Sell Your First Book"
+                buttonText="Publicá tu Primer Libro"
               />
             )}
           </div>

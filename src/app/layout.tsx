@@ -16,8 +16,8 @@ const roboto_Mono = Roboto_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Book Kart",
-  description: "this is e-commerce platform where you can buy or shell your used books",
+  title: "BookKart - Comprá y Vendé Libros Usados en Argentina",
+  description: "Plataforma de compra y venta de libros usados en Argentina. Encontrá novelas, libros universitarios, escolares y más a precios accesibles.",
 };
 
 export default function RootLayout({
@@ -26,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="es">
       <body
         className={roboto_Mono.className}
       >
