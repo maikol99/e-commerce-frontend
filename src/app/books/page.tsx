@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import { books, filters } from "@/lib/Constant";
+import { books as mockBooks, filters } from "@/lib/Constant";
+import { useGetProductsQuery } from "@/store/api";
 import Link from "next/link";
 import {
   Accordion,
@@ -43,8 +44,12 @@ const page = () => {
   const [selectedType, setSelectedType] = useState<string[]>([]);
   const [sortOption, setSortOption] = useState("newest");
   const bookPerPage = 6;
-  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+
+  const { data: apiData, isLoading } = useGetProductsQuery(undefined);
+  const dbBooks = apiData?.data || [];
+  // Libros reales de MongoDB primero, más los libros demo de muestra
+  const books = dbBooks.length > 0 ? [...dbBooks, ...mockBooks] : mockBooks;
 
   const toggleFilter = (section: string, item: string) => {
     const updateFilter = (prev: string[]) => {

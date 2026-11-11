@@ -20,6 +20,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { addToCart } from "@/store/slice/cartSlice";
+import { useGetProductByIdQuery } from "@/store/api";
 
 const Page = () => {
   const params = useParams();
@@ -29,7 +30,10 @@ const Page = () => {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const book = {
+  const { data: apiData, isLoading } = useGetProductByIdQuery(id);
+  const realProduct = apiData?.data;
+
+  const mockBook = {
     _id: id,
     images: [
       "https://images.unsplash.com/photo-1604866830893-c13cafa515d5?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8b25saW5lJTIwc2VsbCUyMGJvb2tzfGVufDB8fDB8fHww",
@@ -55,6 +59,14 @@ const Page = () => {
     createdAt: new Date("2024-01-01"),
     seller: { name: "Martín Gómez", phoneNumber: "+54 9 11 5555-4321" },
   };
+
+  const book = realProduct
+    ? {
+        ...realProduct,
+        images: realProduct.images?.length > 0 ? realProduct.images : mockBook.images,
+        seller: realProduct.seller || { name: "Vendedor BookKart", phoneNumber: "" },
+      }
+    : mockBook;
 
   const handleAddToCart = () => {
     setIsAddToCart(true);
@@ -92,7 +104,7 @@ const Page = () => {
     }
   };
 
-  const bookImage = book?.images || [];
+  const bookImage: string[] = Array.isArray(book?.images) ? book.images : [];
 
   const calculateDiscount = (price: number, finalPrice: number): number => {
     if (price > finalPrice && price > 0) {
