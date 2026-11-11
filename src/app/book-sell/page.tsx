@@ -41,10 +41,10 @@ export default function BookSellPage() {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [edition, setEdition] = useState("");
-  const [category, setCategory] = useState("Reading Books (Novels, Children, Business, Literature, History, etc.)");
-  const [classType, setClassType] = useState("B.Com");
+  const [category, setCategory] = useState("Lectura Recreativa");
+  const [classType, setClassType] = useState("Universitario");
   const [subject, setSubject] = useState("");
-  const [condition, setCondition] = useState("Excellent");
+  const [condition, setCondition] = useState("Excelente");
   const [price, setPrice] = useState("");
   const [finalPrice, setFinalPrice] = useState("");
   const [shippingCharge, setShippingCharge] = useState("0");
@@ -298,16 +298,16 @@ export default function BookSellPage() {
                       <SelectValue placeholder="Seleccionar categoría" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Reading Books (Novels, Children, Business, Literature, History, etc.)">
+                      <SelectItem value="Lectura Recreativa">
                         Lectura Recreativa (Novelas, Historia, etc.)
                       </SelectItem>
-                      <SelectItem value="College Books (Higher Education Textbooks)">
+                      <SelectItem value="Universitario">
                         Universitario / Educación Superior
                       </SelectItem>
-                      <SelectItem value="School Books (up to 12th)">
+                      <SelectItem value="Escolar">
                         Escolar / Primaria y Secundaria
                       </SelectItem>
-                      <SelectItem value="Exam/Test Preparation Books">
+                      <SelectItem value="Preparación de Exámenes">
                         Preparación de Exámenes
                       </SelectItem>
                     </SelectContent>
@@ -321,9 +321,9 @@ export default function BookSellPage() {
                       <SelectValue placeholder="Seleccionar estado" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Excellent">Excelente (Como nuevo, sin marcas)</SelectItem>
-                      <SelectItem value="Good">Bueno (Poco uso, marcas mínimas)</SelectItem>
-                      <SelectItem value="Fair">Aceptable (Subrayado o detalles visibles)</SelectItem>
+                      <SelectItem value="Excelente">Excelente (Como nuevo, sin marcas)</SelectItem>
+                      <SelectItem value="Bueno">Bueno (Poco uso, marcas mínimas)</SelectItem>
+                      <SelectItem value="Aceptable">Aceptable (Subrayado o detalles visibles)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -350,11 +350,11 @@ export default function BookSellPage() {
                       <SelectValue placeholder="Seleccionar nivel" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="B.Com">Universitario / Grado</SelectItem>
-                      <SelectItem value="MBA">Posgrado / Maestría</SelectItem>
-                      <SelectItem value="B.Tech">Ingeniería / Tecnología</SelectItem>
-                      <SelectItem value="12th">Secundario</SelectItem>
-                      <SelectItem value="10th">Primaria</SelectItem>
+                      <SelectItem value="Universitario">Universitario / Grado</SelectItem>
+                      <SelectItem value="Posgrado">Posgrado / Maestría</SelectItem>
+                      <SelectItem value="Ingeniería">Ingeniería / Tecnología</SelectItem>
+                      <SelectItem value="Secundario">Secundario</SelectItem>
+                      <SelectItem value="Primario">Primario</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
