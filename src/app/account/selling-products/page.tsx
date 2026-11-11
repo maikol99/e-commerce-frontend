@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useSelector } from "react-redux";
@@ -10,11 +10,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PiggyBank, PlusCircle, ArrowLeft, Trash2, Eye, Loader2, Edit3 } from "lucide-react";
+import Pagination from "@/app/components/Pagination";
 import toast from "react-hot-toast";
 
 export default function SellingProductsPage() {
   const user = useSelector((state: RootState) => state.user.user);
   const sellerId = user?._id || "";
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 4;
 
   const { data, isLoading, refetch } = useGetProductBySellerIdQuery(sellerId, {
     skip: !sellerId,
@@ -23,6 +27,12 @@ export default function SellingProductsPage() {
   const [deleteProduct, { isLoading: isDeleting }] = useDeleteProductByIdMutation();
 
   const sellingProducts = data?.data || [];
+  const totalPages = Math.ceil(sellingProducts.length / itemsPerPage);
+
+  const paginatedProducts = sellingProducts.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   const handleDelete = async (productId: string) => {
     if (!confirm("¿Estás seguro de que querés eliminar esta publicación?")) return;
@@ -30,6 +40,9 @@ export default function SellingProductsPage() {
       await deleteProduct(productId).unwrap();
       toast.success("Publicación eliminada correctamente");
       refetch();
+      if (paginatedProducts.length === 1 && currentPage > 1) {
+        setCurrentPage((prev) => prev - 1);
+      }
     } catch (err: any) {
       toast.error(err?.data?.message || "No se pudo eliminar la publicación");
     }
@@ -83,7 +96,7 @@ export default function SellingProductsPage() {
           </Card>
         ) : (
           <div className="space-y-4">
-            {sellingProducts.map((book: any) => (
+            {paginatedProducts.map((book: any) => (
               <Card key={book._id} className="bg-white rounded-2xl shadow-sm border overflow-hidden">
                 <CardContent className="p-4 flex flex-col sm:flex-row gap-4 items-start sm:items-center">
                   <div className="relative w-20 h-28 flex-shrink-0 rounded-lg overflow-hidden border bg-gray-50">
@@ -121,8 +134,12 @@ export default function SellingProductsPage() {
                   </div>
 
                   <div className="flex sm:flex-col gap-2 w-full sm:w-auto">
+                    {/* Botón de Editar en color negro */}
                     <Link href={`/book-edit/${book._id}`} className="flex-1 sm:flex-initial">
-                      <Button variant="outline" size="sm" className="w-full gap-1.5 border-orange-200 text-orange-600 hover:bg-orange-50 hover:text-orange-700">
+                      <Button
+                        size="sm"
+                        className="w-full gap-1.5 bg-gray-900 hover:bg-black text-white font-semibold rounded-lg shadow-sm"
+                      >
                         <Edit3 className="w-3.5 h-3.5" /> Editar
                       </Button>
                     </Link>
@@ -144,6 +161,17 @@ export default function SellingProductsPage() {
                 </CardContent>
               </Card>
             ))}
+
+            {/* Paginación */}
+            {totalPages > 1 && (
+              <div className="pt-6 pb-2">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage}
+                />
+              </div>
+            )}
           </div>
         )}
       </div>
