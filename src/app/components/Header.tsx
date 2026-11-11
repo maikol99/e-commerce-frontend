@@ -231,8 +231,7 @@ const Header = () => {
         <div className="flex items-center gap-4">
           <Link href="/book-sell">
             <Button
-              variant="secondary"
-              className="bg-yellow-400 text-gray-900 hover:bg-yellow-500"
+              className="bg-orange-600 text-white hover:bg-orange-700 font-semibold shadow-sm"
             >
               Vender Libro Usado
             </Button>

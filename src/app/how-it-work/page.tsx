@@ -57,7 +57,7 @@ export default function HowItWorksPage() {
 
           {/* Cómo Vender */}
           <div className="bg-white p-8 rounded-2xl border shadow-sm space-y-6">
-            <div className="w-12 h-12 rounded-xl bg-yellow-100 text-yellow-800 flex items-center justify-center font-bold text-xl">
+            <div className="w-12 h-12 rounded-xl bg-orange-100 text-orange-700 flex items-center justify-center font-bold text-xl">
               2
             </div>
             <h2 className="text-2xl font-bold text-gray-900">
@@ -65,26 +65,26 @@ export default function HowItWorksPage() {
             </h2>
             <ul className="space-y-4 text-sm text-gray-600">
               <li className="flex items-start gap-3">
-                <RefreshCw className="w-5 h-5 text-yellow-600 shrink-0 mt-0.5" />
+                <RefreshCw className="w-5 h-5 text-orange-600 shrink-0 mt-0.5" />
                 <span>
                   <strong>Publicá gratis:</strong> Subí fotos de tus libros usados y elegí tu precio.
                 </span>
               </li>
               <li className="flex items-start gap-3">
-                <Truck className="w-5 h-5 text-yellow-600 shrink-0 mt-0.5" />
+                <Truck className="w-5 h-5 text-orange-600 shrink-0 mt-0.5" />
                 <span>
                   <strong>Despachá la venta:</strong> Cuando alguien lo compre, preparalo y envialo.
                 </span>
               </li>
               <li className="flex items-start gap-3">
-                <ShieldCheck className="w-5 h-5 text-yellow-600 shrink-0 mt-0.5" />
+                <ShieldCheck className="w-5 h-5 text-orange-600 shrink-0 mt-0.5" />
                 <span>
                   <strong>Cobrá al instante:</strong> Recibí el dinero directo en tu cuenta bancaria o alias.
                 </span>
               </li>
             </ul>
             <Link href="/book-sell" className="block pt-2">
-              <Button className="w-full bg-yellow-400 text-gray-900 hover:bg-yellow-500 font-bold py-5 rounded-xl">
+              <Button className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-5 rounded-xl shadow-sm">
                 Publicar un Libro Ahora <ArrowRight className="w-4 h-4 ml-1" />
               </Button>
             </Link>

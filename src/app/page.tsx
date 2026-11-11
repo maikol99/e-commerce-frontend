@@ -193,7 +193,7 @@ export default function Home() {
       {/* Botón para explorar más libros */}
       <Button
         size="lg"
-        className="flex mt-10 mb-10 mx-auto bg-yellow-500 px-8 py-6 rounded-xl"
+        className="flex mt-10 mb-10 mx-auto bg-orange-600 hover:bg-orange-700 text-white font-bold px-8 py-6 rounded-xl shadow-md transition-all"
       >
         <Link href="/books">
           <div className="text-sm">Explorar Todos los Libros</div>
@@ -201,7 +201,7 @@ export default function Home() {
       </Button>
 
       {/* 🔹 Sección "How to Sell" */}
-      <section className="py-16 bg-amber-50">
+      <section className="py-16 bg-orange-50/40">
         <div className="container mx-auto px-4">
           {/* Título y descripción */}
           <div className="text-center mb-4">
@@ -221,11 +221,11 @@ export default function Home() {
             {/* Itera sobre cada paso de venta */}
             {sellSteps.map((step, index) => (
               <div className="relative flex flex-col h-full" key={index}>
-                <div className="bg-white rounded-xl p-8 shadow-lg text-center flex-grow flex flex-col">
-                  <div className="absolute top-2 left-14 -translate-x-1/2 bg-yellow-400 text-gray-900 px-4 py-1 rounded-full text-sm font-medium z-10">
+                <div className="bg-white rounded-xl p-8 shadow-lg text-center flex-grow flex flex-col border border-gray-100">
+                  <div className="absolute top-2 left-14 -translate-x-1/2 bg-orange-600 text-white px-4 py-1 rounded-full text-sm font-semibold z-10 shadow-sm">
                     {step.step}
                   </div>
-                  <div className="w-16 h-16 mb-2 mx-auto bg-primary/10 rounded-full flex items-center justify-center">
+                  <div className="w-16 h-16 mb-2 mx-auto bg-orange-50 text-orange-600 rounded-full flex items-center justify-center">
                     {step.icon}
                   </div>
                   <h3 className="font-semibold mb-2">{step.title}</h3>
@@ -260,11 +260,11 @@ export default function Home() {
             {/* Itera sobre cada paso de compra */}
             {buySteps.map((step, index) => (
               <div className="relative flex flex-col h-full" key={index}>
-                <div className="bg-yellow-400 rounded-xl p-8 shadow-lg text-center flex-grow flex flex-col">
-                  <div className="absolute top-2 left-14 -translate-x-1/2 bg-white text-black px-4 py-1 rounded-full text-sm font-medium z-10">
+                <div className="bg-white rounded-xl p-8 shadow-lg text-center flex-grow flex flex-col border border-orange-200/80">
+                  <div className="absolute top-2 left-14 -translate-x-1/2 bg-orange-600 text-white px-4 py-1 rounded-full text-sm font-semibold z-10 shadow-sm">
                     {step.step}
                   </div>
-                  <div className="w-16 h-16 mb-2 mx-auto bg-primary/10 rounded-full flex items-center justify-center">
+                  <div className="w-16 h-16 mb-2 mx-auto bg-orange-50 text-orange-600 rounded-full flex items-center justify-center">
                     {step.icon}
                   </div>
                   <h3 className="font-semibold mb-2">{step.title}</h3>

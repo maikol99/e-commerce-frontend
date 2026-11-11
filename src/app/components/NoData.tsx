@@ -39,7 +39,7 @@ const NoData: React.FC<NoDataProps> = ({
       {onClick && (
         <button
           onClick={onClick}
-          className="px-6 py-2.5 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-xl shadow transition-colors cursor-pointer text-sm"
+          className="px-6 py-2.5 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-xl shadow transition-colors cursor-pointer text-sm"
         >
           {buttonText}
         </button>
