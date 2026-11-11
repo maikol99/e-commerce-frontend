@@ -81,9 +81,9 @@ const page = () => {
       toast.error(err?.data?.message || "Error al actualizar la lista");
     }
   };
-  const dbBooks = apiData?.data || [];
-  // Libros reales de MongoDB primero, más los libros demo de muestra
-  const books = dbBooks.length > 0 ? [...dbBooks, ...mockBooks] : mockBooks;
+  const dbBooks: any[] = apiData?.data || [];
+  // Solo los libros reales agregados en la base de datos
+  const books: any[] = dbBooks;
 
   const toggleFilter = (section: string, item: string) => {
     const updateFilter = (prev: string[]) => {

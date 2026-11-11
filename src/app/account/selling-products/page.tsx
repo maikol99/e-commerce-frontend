@@ -9,7 +9,7 @@ import { useGetProductBySellerIdQuery, useDeleteProductByIdMutation } from "@/st
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { PiggyBank, PlusCircle, ArrowLeft, Trash2, Eye, Loader2 } from "lucide-react";
+import { PiggyBank, PlusCircle, ArrowLeft, Trash2, Eye, Loader2, Edit3 } from "lucide-react";
 import toast from "react-hot-toast";
 
 export default function SellingProductsPage() {
@@ -121,9 +121,14 @@ export default function SellingProductsPage() {
                   </div>
 
                   <div className="flex sm:flex-col gap-2 w-full sm:w-auto">
+                    <Link href={`/book-edit/${book._id}`} className="flex-1 sm:flex-initial">
+                      <Button variant="outline" size="sm" className="w-full gap-1.5 border-orange-200 text-orange-600 hover:bg-orange-50 hover:text-orange-700">
+                        <Edit3 className="w-3.5 h-3.5" /> Editar
+                      </Button>
+                    </Link>
                     <Link href={`/books/${book._id}`} className="flex-1 sm:flex-initial">
                       <Button variant="outline" size="sm" className="w-full gap-1.5">
-                        <Eye className="w-4 h-4" /> Ver
+                        <Eye className="w-3.5 h-3.5" /> Ver
                       </Button>
                     </Link>
                     <Button
@@ -133,7 +138,7 @@ export default function SellingProductsPage() {
                       onClick={() => handleDelete(book._id)}
                       disabled={isDeleting}
                     >
-                      <Trash2 className="w-4 h-4" /> Eliminar
+                      <Trash2 className="w-3.5 h-3.5" /> Eliminar
                     </Button>
                   </div>
                 </CardContent>

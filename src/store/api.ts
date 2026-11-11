@@ -18,6 +18,7 @@ const API_URLS = {
     //Products related urls
     PRODUCTS: `${BASE_URL}/product/`,
     PRODUCT_BY_ID: (id:string) => `${BASE_URL}/product/${id}`,
+    UPDATE_PRODUCT: (id:string) => `${BASE_URL}/product/${id}`,
     GET_PRODUCT_BY_SELLER_ID: (sellerId:string) => `${BASE_URL}/product/seller/${sellerId}`,
     DELETE_PRODUCT_BY_PRODUCT_ID: (productId:string) => `${BASE_URL}/product/seller/${productId}`,
 
@@ -154,6 +155,15 @@ export const api = createApi({
             invalidatesTags:['Product']
         }),
 
+        updateProductById: builder.mutation({
+            query:({ id, formData }) => ({
+                url: API_URLS.UPDATE_PRODUCT(id),
+                method: 'PUT',
+                body: formData,
+            }),
+            invalidatesTags:['Product']
+        }),
+
         // ==================== CART ENDPOINTS ====================
 
         getCart: builder.query({
@@ -274,6 +284,7 @@ export const {
     useGetProductByIdQuery,
     useGetProductBySellerIdQuery,
     useDeleteProductByIdMutation,
+    useUpdateProductByIdMutation,
 
     // Cart hooks
     useGetCartQuery,
