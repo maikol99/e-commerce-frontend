@@ -1,7 +1,15 @@
 "use client";
 import React, { useState } from "react";
 import { books as mockBooks, filters } from "@/lib/Constant";
-import { useGetProductsQuery } from "@/store/api";
+import {
+  useGetProductsQuery,
+  useGetWishlistQuery,
+  useAddToWishlistMutation,
+  useRemoveFromWishlistMutation,
+} from "@/store/api";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import toast from "react-hot-toast";
 import Link from "next/link";
 import {
   Accordion,
@@ -45,8 +53,34 @@ const page = () => {
   const [sortOption, setSortOption] = useState("newest");
   const bookPerPage = 6;
   const router = useRouter();
+  const user = useSelector((state: RootState) => state.user.user);
 
   const { data: apiData, isLoading } = useGetProductsQuery(undefined);
+  const { data: wishlistData } = useGetWishlistQuery(user?._id, { skip: !user?._id });
+  const [addToWishlistMutation] = useAddToWishlistMutation();
+  const [removeFromWishlistMutation] = useRemoveFromWishlistMutation();
+
+  const wishlistProducts = wishlistData?.data?.products || [];
+  const wishlistIds = new Set(wishlistProducts.map((p: any) => p?._id || p));
+
+  const handleToggleWishlist = async (e: React.MouseEvent, productId: string) => {
+    e.stopPropagation();
+    if (!user) {
+      toast.error("Iniciá sesión para guardar en favoritos");
+      return;
+    }
+    try {
+      if (wishlistIds.has(productId)) {
+        await removeFromWishlistMutation(productId).unwrap();
+        toast.success("Eliminado de tu lista de deseos");
+      } else {
+        await addToWishlistMutation(productId).unwrap();
+        toast.success("¡Guardado en tu lista de deseos!");
+      }
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Error al actualizar la lista");
+    }
+  };
   const dbBooks = apiData?.data || [];
   // Libros reales de MongoDB primero, más los libros demo de muestra
   const books = dbBooks.length > 0 ? [...dbBooks, ...mockBooks] : mockBooks;
@@ -250,9 +284,21 @@ const page = () => {
                               <Button
                                 size="icon"
                                 variant="ghost"
-                                className="absolute right-2 top-2 h-8 w-8 rounded-full bg-white/80 backdrop-blur-sm transition-opacity duration-300 hover:bg-white group-hover:opacity-100"
+                                onClick={(e) => handleToggleWishlist(e, book._id)}
+                                className={`absolute right-2 top-2 h-8 w-8 rounded-full backdrop-blur-sm transition-all z-10 ${
+                                  wishlistIds.has(book._id)
+                                    ? "bg-white text-red-500 shadow-sm"
+                                    : "bg-white/80 hover:bg-white text-gray-500"
+                                }`}
+                                title={wishlistIds.has(book._id) ? "Quitar de favoritos" : "Guardar en favoritos"}
                               >
-                                <Heart className="h-4 w-4 text-red-500"></Heart>
+                                <Heart
+                                  className={`h-4 w-4 ${
+                                    wishlistIds.has(book._id)
+                                      ? "fill-red-500 text-red-500 scale-110"
+                                      : "text-red-500"
+                                  }`}
+                                />
                               </Button>
                             </div>
                             <div className="p-4 space-y-2">

@@ -24,9 +24,15 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import toast from "react-hot-toast";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "@/store/slice/cartSlice";
-import { useGetProductByIdQuery } from "@/store/api";
+import { RootState } from "@/store/store";
+import {
+  useGetProductByIdQuery,
+  useAddToWishlistMutation,
+  useGetWishlistQuery,
+  useRemoveFromWishlistMutation,
+} from "@/store/api";
 
 const Page = () => {
   const params = useParams();
@@ -35,8 +41,13 @@ const Page = () => {
   const [isAddToCart, setIsAddToCart] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
+  const user = useSelector((state: RootState) => state.user.user);
 
   const { data: apiData, isLoading } = useGetProductByIdQuery(id);
+  const { data: wishlistData } = useGetWishlistQuery(user?._id, { skip: !user?._id });
+  const [addToWishlistMutation] = useAddToWishlistMutation();
+  const [removeFromWishlistMutation] = useRemoveFromWishlistMutation();
+
   const realProduct = apiData?.data;
 
   const mockBook = {
@@ -96,8 +107,26 @@ const Page = () => {
     }, 350);
   };
 
-  const handleAddToWishList = (productId: string) => {
-    toast.success("¡Guardado en tu lista de deseos!");
+  const wishlistProducts = wishlistData?.data?.products || [];
+  const isFavorite = wishlistProducts.some((p: any) => (p?._id || p) === book._id);
+
+  const handleAddToWishList = async (productId: string) => {
+    if (!user) {
+      toast.error("Iniciá sesión para guardar en favoritos");
+      return;
+    }
+    try {
+      if (isFavorite) {
+        await removeFromWishlistMutation(productId).unwrap();
+        toast.success("Eliminado de tu lista de deseos");
+      } else {
+        await addToWishlistMutation(productId).unwrap();
+        toast.success("¡Guardado en tu lista de deseos!");
+      }
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err?.data?.message || "No se pudo actualizar la lista de deseos");
+    }
   };
 
   const handleShare = () => {
@@ -301,11 +330,19 @@ const Page = () => {
                   </Button>
                   <Button
                     variant="outline"
-                    className="py-6 px-4 rounded-xl border-gray-200 hover:bg-red-50 hover:text-red-600 hover:border-red-200 text-gray-700"
+                    className={`py-6 px-4 rounded-xl border transition-all ${
+                      isFavorite
+                        ? "bg-red-50 border-red-200 text-red-600 hover:bg-red-100"
+                        : "border-gray-200 hover:bg-red-50 hover:text-red-600 hover:border-red-200 text-gray-700"
+                    }`}
                     onClick={() => handleAddToWishList(book._id)}
-                    title="Guardar en favoritos"
+                    title={isFavorite ? "Quitar de favoritos" : "Guardar en favoritos"}
                   >
-                    <Heart className="w-4 h-4 text-red-500" />
+                    <Heart
+                      className={`w-4 h-4 text-red-500 transition-transform ${
+                        isFavorite ? "fill-red-500 scale-110" : ""
+                      }`}
+                    />
                   </Button>
                 </div>
               </div>
