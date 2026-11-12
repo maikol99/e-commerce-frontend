@@ -37,7 +37,8 @@ import { Button } from "@/components/ui/button";
 import { Heart } from "lucide-react";
 import Pagination from "../components/Pagination";
 import NoData from "../components/NoData";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Search, X } from "lucide-react";
 
 const filterLabelMap: Record<string, string> = {
   condition: "Estado del Libro",
@@ -53,6 +54,8 @@ const page = () => {
   const [sortOption, setSortOption] = useState("newest");
   const bookPerPage = 6;
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get("q") || "";
   const user = useSelector((state: RootState) => state.user.user);
 
   const { data: apiData, isLoading } = useGetProductsQuery(undefined);
@@ -107,23 +110,33 @@ const page = () => {
   };
 
   const filterBooks = books.filter((book) => {
+    // 🔍 Filtro por búsqueda del Header
+    const cleanQuery = searchQuery.trim().toLowerCase();
+    const matchesSearch =
+      !cleanQuery ||
+      book.title?.toLowerCase().includes(cleanQuery) ||
+      book.author?.toLowerCase().includes(cleanQuery) ||
+      book.subject?.toLowerCase().includes(cleanQuery) ||
+      book.category?.toLowerCase().includes(cleanQuery) ||
+      book.edition?.toLowerCase().includes(cleanQuery);
+
     const conditionMatch =
       selectedCondition.length === 0 ||
       selectedCondition
         .map((cond) => cond.toLowerCase())
-        .includes(book.condition.toLowerCase());
+        .includes(book.condition?.toLowerCase());
     const typeMatch =
       selectedType.length === 0 ||
       selectedType
         .map((cond) => cond.toLowerCase())
-        .includes(book.classType.toLowerCase());
+        .includes(book.classType?.toLowerCase());
     const categoryMatch =
       selectedCategory.length === 0 ||
       selectedCategory
         .map((cond) => cond.toLowerCase())
-        .includes(book.category.toLowerCase());
+        .includes(book.category?.toLowerCase());
 
-    return conditionMatch && typeMatch && categoryMatch;
+    return matchesSearch && conditionMatch && typeMatch && categoryMatch;
   });
 
   const sortedBooks = [...filterBooks].sort((a, b) => {
@@ -177,9 +190,26 @@ const page = () => {
           <span>Libros</span>
         </nav>
 
-        <h1 className="mb-8 text-3xl font-bold">
-          Encontrá entre miles de libros usados online
-        </h1>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">
+              Encontrá entre miles de libros usados online
+            </h1>
+            {searchQuery && (
+              <div className="flex items-center gap-2 mt-2">
+                <span className="text-sm text-gray-500">
+                  Resultados para: <strong className="text-gray-900">"{searchQuery}"</strong> ({sortedBooks.length} encontrado{sortedBooks.length !== 1 ? "s" : ""})
+                </span>
+                <button
+                  onClick={() => router.push("/books")}
+                  className="inline-flex items-center gap-1 text-xs bg-gray-200 hover:bg-gray-300 text-gray-700 px-2 py-1 rounded-full transition-colors"
+                >
+                  <X className="w-3 h-3" /> Limpiar búsqueda
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
 
         <div className="grid gap-8 md:grid-cols-[280px_1fr]">
           {/* SIDEBAR DE FILTROS */}

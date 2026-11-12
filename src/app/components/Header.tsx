@@ -53,7 +53,18 @@ const Header = () => {
   const cartItems = useSelector((state: RootState) => state.cart?.items || []);
   const cartCount = cartItems.reduce((acc, item) => acc + (item.quantity || 1), 0);
   
+  const [searchQuery, setSearchQuery] = useState("");
   const [logoutMutation] = useLogoutMutation(); 
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanQuery = searchQuery.trim();
+    if (cleanQuery) {
+      router.push(`/books?q=${encodeURIComponent(cleanQuery)}`);
+    } else {
+      router.push("/books");
+    }
+  };
 
   const userPlaceholder = user?.name?.split(" ").map((name:string) => name[0]).join("");
 
@@ -213,20 +224,23 @@ const Header = () => {
           />
         </Link>
         <div className="flex flex-1 items-center justify-center max-w-xl px-4">
-          <div className="relative w-full">
+          <form onSubmit={handleSearchSubmit} className="relative w-full">
             <Input
               type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Título / Autor / Género / Editorial..."
-              className="w-full pr-10"
+              className="w-full pr-10 rounded-xl"
             />
             <Button
+              type="submit"
               size="icon"
               variant="ghost"
-              className="absolute right-0 top-1/2 -translate-y-1/2"
+              className="absolute right-0 top-1/2 -translate-y-1/2 hover:text-orange-600"
             >
               <Search className="h-5 w-5" />
             </Button>
-          </div>
+          </form>
         </div>
         <div className="flex items-center gap-4">
           <Link href="/book-sell">
@@ -308,20 +322,23 @@ const Header = () => {
           />
         </Link>
         <div className="flex flex-1 items-center justify-center max-w-xl px-4">
-          <div className="relative w-full">
+          <form onSubmit={handleSearchSubmit} className="relative w-full">
             <Input
               type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Buscar libros..."
-              className="w-full pr-10"
+              className="w-full pr-10 rounded-xl"
             />
             <Button
+              type="submit"
               size="icon"
               variant="ghost"
-              className="absolute right-0 top-1/2 -translate-y-1/2"
+              className="absolute right-0 top-1/2 -translate-y-1/2 hover:text-orange-600"
             >
               <Search className="h-5 w-5" />
             </Button>
-          </div>
+          </form>
         </div>
         <Link href={"/checkout/cart"}>
           <div className="relative">
