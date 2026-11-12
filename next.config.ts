@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
       'media.istockphoto.com',
       'res.cloudinary.com',
       'localhost',
+      'lh3.googleusercontent.com',
     ]
   }
 };

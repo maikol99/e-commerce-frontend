@@ -9,8 +9,9 @@ import { useGetProductBySellerIdQuery, useDeleteProductByIdMutation } from "@/st
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { PiggyBank, PlusCircle, ArrowLeft, Trash2, Eye, Loader2, Edit3 } from "lucide-react";
+import { PiggyBank, PlusCircle, Trash2, Eye, Loader2, Edit3 } from "lucide-react";
 import Pagination from "@/app/components/Pagination";
+import AccountSidebar from "@/app/components/AccountSidebar";
 import toast from "react-hot-toast";
 
 export default function SellingProductsPage() {
@@ -48,132 +49,161 @@ export default function SellingProductsPage() {
     }
   };
 
-  return (
-    <div className="min-h-screen bg-gray-100 py-10">
-      <div className="container mx-auto px-4 max-w-4xl">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
-          <div className="flex items-center gap-3">
-            <Link href="/account/profile">
-              <Button variant="ghost" size="sm" className="gap-2">
-                <ArrowLeft className="w-4 h-4" /> Perfil
-              </Button>
-            </Link>
-            <h1 className="text-3xl font-bold text-gray-900">
-              Mis Libros en Venta
-            </h1>
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gray-50/60 flex items-center justify-center p-4">
+        <div className="bg-white p-8 rounded-3xl shadow-sm border max-w-md w-full text-center space-y-4">
+          <div className="w-16 h-16 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mx-auto">
+            <PiggyBank className="w-8 h-8" />
           </div>
-
-          <Link href="/book-sell">
-            <Button className="bg-orange-600 hover:bg-orange-700 text-white font-bold gap-2 rounded-xl shadow-sm cursor-pointer">
-              <PlusCircle className="w-4 h-4" /> Publicar Nuevo Libro
+          <h2 className="text-2xl font-bold text-gray-900">Iniciá Sesión</h2>
+          <p className="text-sm text-gray-500">
+            Para gestionar tus libros en venta, iniciá sesión en tu cuenta.
+          </p>
+          <Link href="/">
+            <Button className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-5 rounded-xl">
+              Ir al Inicio
             </Button>
           </Link>
         </div>
+      </div>
+    );
+  }
 
-        {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-20">
-            <Loader2 className="w-8 h-8 animate-spin text-orange-600 mb-2" />
-            <p className="text-gray-500 text-sm">Cargando tus publicaciones...</p>
+  return (
+    <div className="min-h-screen bg-gray-50/60 py-10">
+      <div className="container mx-auto px-4 max-w-5xl">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+          {/* ── SIDEBAR ── */}
+          <div className="md:col-span-4">
+            <AccountSidebar />
           </div>
-        ) : sellingProducts.length === 0 ? (
-          <Card className="border border-dashed border-gray-300 shadow-sm p-12 text-center bg-white rounded-2xl">
-            <CardContent className="flex flex-col items-center justify-center p-0">
-              <div className="w-20 h-20 rounded-full bg-orange-100 flex items-center justify-center mb-6 text-orange-600">
-                <PiggyBank className="w-10 h-10" />
+
+          {/* ── CONTENIDO DERECHO ── */}
+          <div className="md:col-span-8 space-y-6">
+            {/* Banner Superior Estilo Perfil */}
+            <div className="rounded-3xl p-8 bg-gradient-to-r from-orange-600 via-orange-500 to-amber-600 text-white shadow-lg relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="relative z-10">
+                <h1 className="text-3xl font-extrabold tracking-tight mb-1">
+                  Mis Libros en Venta
+                </h1>
+                <p className="text-sm text-orange-100 font-medium">
+                  Publicaciones activas en el marketplace de BookKart.
+                </p>
               </div>
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">
-                No tenés libros publicados todavía
-              </h2>
-              <p className="text-gray-500 max-w-md mb-6">
-                ¿Tenés libros leídos que ya no usás? Publicalos en minutos, poné tu precio y recibí el dinero directo en tu cuenta bancaria o billetera virtual.
-              </p>
-              <Link href="/book-sell">
-                <Button className="bg-orange-600 hover:bg-orange-700 text-white font-bold px-6 py-5 rounded-xl shadow-sm cursor-pointer">
-                  Publicar mi Primer Libro
+
+              <Link href="/book-sell" className="relative z-10">
+                <Button className="bg-white text-gray-900 hover:bg-gray-100 font-bold gap-2 rounded-xl shadow-md cursor-pointer border-0">
+                  <PlusCircle className="w-4 h-4 text-orange-600" /> Publicar Libro
                 </Button>
               </Link>
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="space-y-4">
-            {paginatedProducts.map((book: any) => (
-              <Card key={book._id} className="bg-white rounded-2xl shadow-sm border overflow-hidden">
-                <CardContent className="p-4 flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-                  <div className="relative w-20 h-28 flex-shrink-0 rounded-lg overflow-hidden border bg-gray-50">
-                    <Image
-                      src={book.images?.[0] || "/images/book1.jpg"}
-                      alt={book.title}
-                      fill
-                      className="object-cover"
+              <div className="absolute -right-8 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+            </div>
+
+            {/* Listado de publicaciones */}
+            {isLoading ? (
+              <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-gray-100">
+                <Loader2 className="w-8 h-8 animate-spin text-orange-600 mb-2" />
+                <p className="text-gray-500 text-sm">Cargando tus publicaciones...</p>
+              </div>
+            ) : sellingProducts.length === 0 ? (
+              <div className="border border-dashed border-gray-300 shadow-sm p-12 text-center bg-white rounded-3xl">
+                <div className="w-20 h-20 rounded-full bg-orange-100 flex items-center justify-center mb-6 text-orange-600 mx-auto">
+                  <PiggyBank className="w-10 h-10" />
+                </div>
+                <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                  No tenés libros publicados todavía
+                </h2>
+                <p className="text-gray-500 max-w-md mx-auto mb-6">
+                  ¿Tenés libros leídos que ya no usás? Publicalos en minutos, poné tu precio y recibí el dinero directo en tu cuenta bancaria o billetera virtual.
+                </p>
+                <Link href="/book-sell">
+                  <Button className="bg-orange-600 hover:bg-orange-700 text-white font-bold px-6 py-5 rounded-xl shadow-sm cursor-pointer">
+                    Publicar mi Primer Libro
+                  </Button>
+                </Link>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {paginatedProducts.map((book: any) => (
+                  <Card key={book._id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all">
+                    <CardContent className="p-4 flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                      <div className="relative w-20 h-28 flex-shrink-0 rounded-lg overflow-hidden border bg-gray-50">
+                        <Image
+                          src={book.images?.[0] || "/images/book1.jpg"}
+                          alt={book.title}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+
+                      <div className="flex-1 space-y-1">
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-bold text-gray-900 text-base">{book.title}</h3>
+                          <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
+                            {book.condition}
+                          </Badge>
+                        </div>
+                        {book.author && (
+                          <p className="text-sm text-gray-500">Autor: {book.author}</p>
+                        )}
+                        <p className="text-xs text-gray-400">
+                          Categoría: {book.category} | Nivel: {book.classType}
+                        </p>
+                        <div className="flex items-baseline gap-2 pt-1">
+                          <span className="text-xl font-bold text-orange-600">
+                            ${book.finalPrice?.toLocaleString("es-AR")}
+                          </span>
+                          {book.price && book.price > book.finalPrice && (
+                            <span className="text-sm text-gray-400 line-through">
+                              ${book.price?.toLocaleString("es-AR")}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex sm:flex-col gap-2 w-full sm:w-auto">
+                        <Link href={`/book-edit/${book._id}`} className="flex-1 sm:flex-initial">
+                          <Button
+                            size="sm"
+                            className="w-full gap-1.5 bg-gray-900 hover:bg-black text-white font-semibold rounded-lg shadow-sm"
+                          >
+                            <Edit3 className="w-3.5 h-3.5" /> Editar
+                          </Button>
+                        </Link>
+                        <Link href={`/books/${book._id}`} className="flex-1 sm:flex-initial">
+                          <Button variant="outline" size="sm" className="w-full gap-1.5">
+                            <Eye className="w-3.5 h-3.5" /> Ver
+                          </Button>
+                        </Link>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="flex-1 sm:flex-initial text-red-600 hover:text-red-700 hover:bg-red-50 gap-1.5"
+                          onClick={() => handleDelete(book._id)}
+                          disabled={isDeleting}
+                        >
+                          <Trash2 className="w-3.5 h-3.5" /> Eliminar
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+
+                {/* Paginación */}
+                {totalPages > 1 && (
+                  <div className="pt-4 pb-2">
+                    <Pagination
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      onPageChange={setCurrentPage}
                     />
                   </div>
-
-                  <div className="flex-1 space-y-1">
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-bold text-gray-900 text-lg">{book.title}</h3>
-                      <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
-                        {book.condition}
-                      </Badge>
-                    </div>
-                    {book.author && (
-                      <p className="text-sm text-gray-500">Autor: {book.author}</p>
-                    )}
-                    <p className="text-xs text-gray-400">
-                      Categoría: {book.category} | Nivel: {book.classType}
-                    </p>
-                    <div className="flex items-baseline gap-2 pt-1">
-                      <span className="text-xl font-bold text-orange-600">
-                        ${book.finalPrice?.toLocaleString("es-AR")}
-                      </span>
-                      {book.price && book.price > book.finalPrice && (
-                        <span className="text-sm text-gray-400 line-through">
-                          ${book.price?.toLocaleString("es-AR")}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="flex sm:flex-col gap-2 w-full sm:w-auto">
-                    {/* Botón de Editar en color negro */}
-                    <Link href={`/book-edit/${book._id}`} className="flex-1 sm:flex-initial">
-                      <Button
-                        size="sm"
-                        className="w-full gap-1.5 bg-gray-900 hover:bg-black text-white font-semibold rounded-lg shadow-sm"
-                      >
-                        <Edit3 className="w-3.5 h-3.5" /> Editar
-                      </Button>
-                    </Link>
-                    <Link href={`/books/${book._id}`} className="flex-1 sm:flex-initial">
-                      <Button variant="outline" size="sm" className="w-full gap-1.5">
-                        <Eye className="w-3.5 h-3.5" /> Ver
-                      </Button>
-                    </Link>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="flex-1 sm:flex-initial text-red-600 hover:text-red-700 hover:bg-red-50 gap-1.5"
-                      onClick={() => handleDelete(book._id)}
-                      disabled={isDeleting}
-                    >
-                      <Trash2 className="w-3.5 h-3.5" /> Eliminar
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-
-            {/* Paginación */}
-            {totalPages > 1 && (
-              <div className="pt-6 pb-2">
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  onPageChange={setCurrentPage}
-                />
+                )}
               </div>
             )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
