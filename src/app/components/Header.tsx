@@ -101,12 +101,15 @@ const Header = () => {
             href: "/account/profile",
             content: (
               <div className="flex space-x-4 items-center p-2 border-b">
-                <Avatar className="w-12 h-12 -ml-2 rounded-full">
-                  {user?.profilePicture ? (
-                    <AvatarImage src={user.profilePicture} alt="user_image"></AvatarImage>
-                  ) : (
-                    <AvatarFallback>{userPlaceholder}</AvatarFallback>
-                  )}
+                <Avatar className="w-12 h-12 -ml-2 rounded-full border border-gray-200">
+                  <AvatarImage 
+                    src={user.profilePicture} 
+                    alt={user.name || "Usuario"} 
+                    referrerPolicy="no-referrer"
+                  />
+                  <AvatarFallback className="bg-orange-600 text-white font-bold text-sm">
+                    {userPlaceholder || "U"}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col">
                   <span className="font-semibold text-md">{user.name}</span>
@@ -254,14 +257,15 @@ const Header = () => {
           <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost">
-                <Avatar className="w-8 h-8 rounded-full">
-                  {user?.profilePicture ? (
-                    <AvatarImage src={user.profilePicture} alt="user_image"></AvatarImage>
-                  ) : userPlaceholder ? (
-                    <AvatarFallback>{userPlaceholder}</AvatarFallback>
-                  ) : (
-                    <User className="ml-2 mt-2" />
-                  )}
+                <Avatar className="w-8 h-8 rounded-full border border-gray-200">
+                  <AvatarImage 
+                    src={user?.profilePicture} 
+                    alt={user?.name || "Usuario"} 
+                    referrerPolicy="no-referrer"
+                  />
+                  <AvatarFallback className="bg-orange-600 text-white font-bold text-xs">
+                    {userPlaceholder || <User className="w-4 h-4" />}
+                  </AvatarFallback>
                 </Avatar>
                 Mi Cuenta
               </Button>

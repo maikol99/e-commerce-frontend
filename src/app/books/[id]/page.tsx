@@ -87,6 +87,24 @@ const Page = () => {
 
   const bookImage: string[] = Array.isArray(book?.images) ? book.images : [];
 
+  const handleWhatsAppContact = () => {
+    const rawPhone = book?.seller?.phoneNumber || "";
+    // Limpiamos el número dejando solo dígitos
+    const cleanPhone = rawPhone.replace(/\D/g, "");
+
+    if (!cleanPhone) {
+      toast.error("El vendedor no tiene un número de WhatsApp registrado.");
+      return;
+    }
+
+    const message = encodeURIComponent(
+      `¡Hola ${book.seller?.name || ""}! Vi tu libro "${book.title}" en BookKart y me gustaría coordinar para comprarlo. ¿Sigue disponible?`
+    );
+
+    const whatsappUrl = `https://wa.me/${cleanPhone}?text=${message}`;
+    window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+  };
+
   const handleAddToCart = () => {
     setIsAddToCart(true);
     dispatch(
@@ -321,6 +339,15 @@ const Page = () => {
                 <div className="flex gap-2">
                   <Button
                     variant="outline"
+                    className="py-6 px-4 rounded-xl border-emerald-200 bg-emerald-50/50 hover:bg-emerald-100/70 text-emerald-800"
+                    onClick={handleWhatsAppContact}
+                    title="Consultar por WhatsApp"
+                  >
+                    <MessageCircle className="w-4 h-4 text-emerald-600 sm:mr-1.5" />
+                    <span className="hidden sm:inline text-xs font-semibold">WhatsApp</span>
+                  </Button>
+                  <Button
+                    variant="outline"
                     className="py-6 px-4 rounded-xl border-gray-200 hover:bg-gray-50 text-gray-700"
                     onClick={handleShare}
                     title="Compartir"
@@ -438,10 +465,19 @@ const Page = () => {
                   <span>Argentina</span>
                 </div>
 
-                {book.seller?.phoneNumber && (
-                  <div className="flex items-center gap-2 text-xs text-gray-600 bg-gray-50 p-3 rounded-xl border border-gray-100">
-                    <MessageCircle className="w-4 h-4 text-emerald-600" />
-                    <span>WhatsApp: {book.seller.phoneNumber}</span>
+                {book.seller?.phoneNumber ? (
+                  <div className="flex items-center justify-between gap-2 text-xs text-gray-700 bg-emerald-50/60 p-3.5 rounded-2xl border border-emerald-100">
+                    <div className="flex items-center gap-2">
+                      <MessageCircle className="w-4 h-4 text-emerald-600" />
+                      <span className="font-medium">WhatsApp: {book.seller.phoneNumber}</span>
+                    </div>
+                    <span className="text-[10px] bg-emerald-600 text-white font-bold px-2 py-0.5 rounded-full">
+                      Disponible
+                    </span>
+                  </div>
+                ) : (
+                  <div className="text-xs text-gray-400 bg-gray-50 p-3 rounded-xl border border-gray-100">
+                    El vendedor coordina la entrega tras la compra.
                   </div>
                 )}
               </CardContent>
@@ -449,11 +485,11 @@ const Page = () => {
 
             <div className="pt-6 border-t border-gray-100 mt-6">
               <Button
-                variant="outline"
-                className="w-full rounded-xl py-5 text-xs font-semibold text-gray-700 hover:bg-gray-50"
-                onClick={() => toast.success("Podés comunicarte tras agregar el libro al carrito")}
+                className="w-full rounded-2xl py-6 text-sm font-bold bg-emerald-600 hover:bg-emerald-700 text-white gap-2 shadow-md shadow-emerald-600/20 cursor-pointer transition-all hover:scale-[1.01] active:scale-[0.99]"
+                onClick={handleWhatsAppContact}
               >
-                Preguntar al vendedor
+                <MessageCircle className="w-5 h-5" />
+                Contactar por WhatsApp
               </Button>
             </div>
           </Card>

@@ -52,13 +52,14 @@ export default function AccountSidebar() {
       {/* Tarjeta de usuario */}
       <div className="flex items-center gap-3.5 pb-4 border-b border-white/10">
         <Avatar className="w-12 h-12 rounded-full border-2 border-orange-500/80 shadow-md">
-          {user?.profilePicture ? (
-            <AvatarImage src={user.profilePicture} alt={user?.name || "Usuario"} />
-          ) : (
-            <AvatarFallback className="bg-orange-500 text-white font-bold text-lg">
-              {userInitial}
-            </AvatarFallback>
-          )}
+          <AvatarImage 
+            src={user?.profilePicture} 
+            alt={user?.name || "Usuario"} 
+            referrerPolicy="no-referrer"
+          />
+          <AvatarFallback className="bg-orange-500 text-white font-bold text-lg">
+            {userInitial}
+          </AvatarFallback>
         </Avatar>
         <div className="min-w-0 flex-1">
           <h3 className="font-semibold text-sm text-white truncate">{user?.name}</h3>
