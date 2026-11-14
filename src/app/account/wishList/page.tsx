@@ -69,15 +69,15 @@ export default function WishlistPage() {
 
   return (
     <div className="min-h-screen bg-gray-50/60 py-10">
-      <div className="container mx-auto px-4 max-w-5xl">
+      <div className="container mx-auto px-4 max-w-7xl">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
           {/* ── SIDEBAR ── */}
-          <div className="md:col-span-4">
+          <div className="md:col-span-3">
             <AccountSidebar />
           </div>
 
           {/* ── CONTENIDO DERECHO ── */}
-          <div className="md:col-span-8 space-y-6">
+          <div className="md:col-span-9 space-y-6">
             {/* Banner Superior Estilo Perfil */}
             <div className="rounded-3xl p-8 bg-gradient-to-r from-orange-600 via-orange-500 to-amber-600 text-white shadow-lg relative overflow-hidden">
               <div className="relative z-10">
